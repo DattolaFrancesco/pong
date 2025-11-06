@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+   
+}
+.left{
+    
+    height: 100%;
+    width: 434px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+}
+.right{
+    
+    height: 100%;
+    width: 434px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+#canvas{
+    background-color: blue;
+    width: 800px;
+    height: 800px;
+}
