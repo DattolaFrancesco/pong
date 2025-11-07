@@ -26,7 +26,9 @@ let margin = 2;
 let rettangoli = [{x:50,y:120,Rsize:Rsize,Rheight:Rheight}];
 let rettangoli2 = [{x:50,y:155,Rsize:Rsize,Rheight:Rheight}];
 let rettangoli3 = [{x:50,y:190,Rsize:Rsize,Rheight:Rheight}];
-let rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight}];
+let rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight, vita:2, color: "yellow"}];
+let vite = 2;
+
 
 // variabili movimento
 let velocita = 10;
@@ -56,13 +58,13 @@ function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     
     gameOver();
+    drawBall();
     disegnarect();
     movement();
     bordiBar();
     Ballmovement();
     collisioneBar();
     collsionwall();
-    drawBall();
     drawBar();
     requestAnimationFrame(loop);
 }loop();
@@ -141,15 +143,15 @@ function crearerectrow4(){
     for(let i = 1; i < 8; i++){
     let x = rettangoli4[i-1].x + Rsize + margin;
     let y = 225;
-    rettangoli4.push({x,y,Rsize,Rheight})
+    rettangoli4.push({x,y,Rsize,Rheight,vita:2})
     }
 }
 function disegnarect(){
-    for(let i = 0; i < rettangoli.length; i++){
+    for(let i = 0; i < rettangoli4.length; i++){
         
         hitX = false;
         hitY = false;
-        ctx.fillStyle = "white";
+        ctx.fillStyle = rettangoli4[i].color;
     //ctx.fillRect(rettangoli[i].x,rettangoli[i].y,rettangoli[i].Rsize,rettangoli[i].Rheight);
     //ctx.fillRect(rettangoli2[i].x,rettangoli2[i].y,rettangoli2[i].Rsize,rettangoli2[i].Rheight);
     //ctx.fillRect(rettangoli3[i].x,rettangoli3[i].y,rettangoli3[i].Rsize,rettangoli3[i].Rheight);
@@ -157,19 +159,24 @@ function disegnarect(){
         
     //parte sinistra
     if(ballY < rettangoli4[i].y + Rheight && ballY > rettangoli4[i].y && ballX + radius > rettangoli4[i].x && ballX < rettangoli4[i].x )
-        {hitX = true;console.log("ciao")
+        {hitX = true; rettangoli4[i].vita -= 1;
     }
     // parte alta
     else if(ballX > rettangoli4[i].x && rettangoli4[i].x + Rsize > ballX && ballY + radius > rettangoli4[i].y &&  ballY + radius < rettangoli4[i].y + Rheight){
-       hitY = true;console.log("jj")
+       hitY = true;rettangoli4[i].vita -= 1;
     }
     // parte bassa
     else if(ballX > rettangoli4[i].x && rettangoli4[i].x + Rsize > ballX && ballY - radius < rettangoli4[i].y + Rheight && ballY - radius > rettangoli4[i].y){
-       hitY = true;console.log('hh')
+       hitY = true;rettangoli4[i].vita -= 1;
     } 
     // parte destra 
     else if(ballY < rettangoli4[i].y + Rheight && ballY > rettangoli4[i].y && ballX - radius < rettangoli4[i].x + Rsize && ballX - radius > rettangoli4[i].x ){
-        hitX = true;console.log('xx')
+        hitX = true;rettangoli4[i].vita -= 1;
+    }
+    if(rettangoli4[i].vita == 0){
+        rettangoli4.splice(i,1);
+        
+       
     }
     
 
@@ -189,6 +196,7 @@ function disegnarect(){
         ballY += balldirectionY * 0.3
 
     }
+
 }
 
 
