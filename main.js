@@ -5,9 +5,16 @@ canvas.height = 800;
 const sfondoV = new Image();
 sfondoV.src = "fuochi.png";
 const Lono = new Image();
-Lono.src = "Lono.png";
+Lono.src = "Lonosfondo1.jpg";
 const Razzismo = new Image();
 Razzismo.src = "norazzismo.png";
+const Lono2 = new Image();
+Lono2.src = "LonoFase2.png";
+const Lono3 = new Image();
+Lono3.src = "LonoFase3.png";
+
+
+
 
 
 // caricamento font e poi loop
@@ -15,16 +22,22 @@ Promise.all([
     new Promise(resolve => sfondoV.onload = resolve),
     new Promise(resolve => Lono.onload = resolve),
     new Promise(resolve => Razzismo.onload = resolve),
+    new Promise(resolve => Lono2.onload = resolve),
+    new Promise(resolve => Lono3.onload = resolve),
     document.fonts.ready
 ]).then(()=>{
     ctx.font = "60px 'Sixtyfour Convergence'";
+    ctx.fillText("test", 0, 0);
     ctx.font = "60px 'Sixtyfour'";
+    ctx.fillText("test", 0, 0);
+    
     loop();
 })
 
 
 
-
+// variabile stage gioco
+let stageGame = 0;
 // variabile power
 let powerx = 380;
 let powery = 175;
@@ -111,7 +124,7 @@ function loop(){
         ctx.fillText("VICTORY!",canvas.width / 2,canvas.height/2,);
         return;
     }
-    ctx.drawImage(Lono,0,0,canvas.width,canvas.height);
+    stageG();
     vittoria();
     controlloLose();
     hearts();
@@ -119,7 +132,7 @@ function loop(){
     disegnarect();
     movement();
     bordiBar();
-    Ballmovement();
+    //Ballmovement();
     collisioneBar();
     collsionwall();
     drawBar();
@@ -141,21 +154,23 @@ function Ballmovement(){
         pallay += ball2directionY;
     }}
 function drawBall(){
-   
+    ctx.save();
     ctx.fillStyle = 'white'
     ctx.beginPath();
     ctx.arc(ballX,ballY, radius,0,Math.PI * 2)
     ctx.fill();
+    ctx.restore();
 }
 function drawBar(){
     ctx.save();
     ctx.fillStyle = "white";
     ctx.fillRect(barX,barY,barSize,barH);
-    ctx.strokeStyle = 'orange';
-    ctx.lineWidth = "3"
-    ctx.shadowColor = "orange";
+    ctx.strokeStyle = 'blue';
+    ctx.shadowColor = "blue";
+    ctx.lineWidth = "2"
     ctx.shadowBlur = 12
     ctx.strokeRect(barX,barY,barSize,barH);
+    ctx.stroke();
     ctx.restore(); 
 }
 function bordiBar(){
@@ -258,6 +273,7 @@ function disegnarect(){
     hitY = false;
     if(rettangoli4[i].vita == 0){
         rettangoli4.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli4[i].vita == 1){
@@ -308,6 +324,7 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3[i].vita == 0){
         rettangoli3.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli3[i].vita == 1){
@@ -355,6 +372,7 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3emezzo[i].vita == 0){
         rettangoli3emezzo.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli3emezzo[i].vita == 1){
@@ -402,6 +420,7 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli2[i].vita == 0){
         rettangoli2.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli2[i].vita == 1){
@@ -449,6 +468,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli[i].vita == 0){
         rettangoli.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli[i].vita == 1){
@@ -493,12 +513,14 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     
                 // BALL 2 !!!
                 //riga 4
+    if(vivaBall2){
     for(let i = rettangoli4.length - 1; i >= 0; i--){
         
     hitX = false;
     hitY = false;
     if(rettangoli4[i].vita == 0){
         rettangoli4.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli4[i].vita == 1){
@@ -549,6 +571,7 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3[i].vita == 0){
         rettangoli3.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli3[i].vita == 1){
@@ -596,6 +619,7 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3emezzo[i].vita == 0){
         rettangoli3emezzo.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli3emezzo[i].vita == 1){
@@ -643,6 +667,7 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli2[i].vita == 0){
         rettangoli2.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli2[i].vita == 1){
@@ -690,6 +715,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli[i].vita == 0){
         rettangoli.splice(i,1);
+        stageGame ++;
         continue;
     }
     if(rettangoli[i].vita == 1){
@@ -728,7 +754,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     else if (hitY) {
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
-    }}
+    }}}
 };
 function hearts(){
     const heart = new Image();
@@ -767,6 +793,18 @@ function Ball2(){
         ctx.arc(pallax,pallay, radius,0,Math.PI * 2)
         ctx.fill();
         ctx.restore(); 
+    }
+}
+function stageG(){
+    
+    if(stageGame >= 0 && stageGame < 10){
+        ctx.drawImage(Lono,0,0,canvas.width,canvas.height);
+    }
+    if(stageGame >= 10 && stageGame < 23){
+        ctx.drawImage(Lono2,0,0,canvas.width,canvas.height);
+    }
+    if(stageGame >= 23){
+        ctx.drawImage(Lono3,0,0,canvas.width,canvas.height);
     }
 }
 
