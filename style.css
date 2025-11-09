@@ -1,5 +1,6 @@
 *{
     margin: 0;
+    background-color: #243010;
 }
 
 .container{
@@ -9,28 +10,22 @@
     height: 100vh;
    
 }
-.left{
-    
-    height: 100%;
-    width: 434px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-
-}
-.right{
-    
-    height: 100%;
-    width: 434px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-   
-}
 #canvas{
    /*background-image: url(spazio.jpg);*/
    background-color: black;
     width: 800px;
     height: 800px;
+    border: 3px solid #87A330;
+    box-shadow:  0px 0px 60px #A1C349;
+    position: relative;
+    z-index: 1;
+}
+#canvasLeft{
+    background-color: azure;
+    width: 450px;
+    height: 300px;
+    position: absolute;
+    z-index: 2;
+    left: 10px;
 }

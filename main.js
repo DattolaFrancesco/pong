@@ -1,17 +1,27 @@
 const canvas = document.querySelector("#canvas");
+const canvasLeft = document.querySelector("#canvasLeft");
+const ctxLeft = canvasLeft.getContext("2d");
 const ctx = canvas.getContext("2d");
 canvas.width = 800;
 canvas.height = 800;
+canvasLeft.width = 450;
+canvasLeft.height = 300;
 const sfondoV = new Image();
 sfondoV.src = "fuochi.png";
 const Lono = new Image();
-Lono.src = "Lonosfondo1.jpg";
+Lono.src = "Lono1.jpg";
 const Razzismo = new Image();
 Razzismo.src = "norazzismo.png";
 const Lono2 = new Image();
-Lono2.src = "LonoFase2.png";
+Lono2.src = "lonoMare.jpg";
 const Lono3 = new Image();
 Lono3.src = "LonoFase3.png";
+const RobotImg = new Image();
+RobotImg.src = "robot.png";
+const RobotFrame2 = new Image();
+RobotFrame2.src = "robotframe2.png";
+const Robotframe3 = new Image();
+Robotframe3.src = "robotframe3.png";
 
 
 
@@ -24,12 +34,17 @@ Promise.all([
     new Promise(resolve => Razzismo.onload = resolve),
     new Promise(resolve => Lono2.onload = resolve),
     new Promise(resolve => Lono3.onload = resolve),
+    new Promise(resolve => RobotImg.onload = resolve),
+    new Promise(resolve => RobotFrame2.onload = resolve),
+    new Promise(resolve => Robotframe3.onload = resolve),
     document.fonts.ready
 ]).then(()=>{
     ctx.font = "60px 'Sixtyfour Convergence'";
     ctx.fillText("test", 0, 0);
     ctx.font = "60px 'Sixtyfour'";
     ctx.fillText("test", 0, 0);
+    ctxLeft.font = " 28px 'Jersey 10'";
+    ctxLeft.fillText("test", 0, 0);
     
     loop();
 })
@@ -107,6 +122,7 @@ crearerectrow4();
 
 function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
     if(GameOver){
         ctx.fillStyle = "black";
         ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -165,8 +181,8 @@ function drawBar(){
     ctx.save();
     ctx.fillStyle = "white";
     ctx.fillRect(barX,barY,barSize,barH);
-    ctx.strokeStyle = 'blue';
-    ctx.shadowColor = "blue";
+    ctx.strokeStyle = '#87A330';
+    ctx.shadowColor = "#87A330";
     ctx.lineWidth = "2"
     ctx.shadowBlur = 12
     ctx.strokeRect(barX,barY,barSize,barH);
@@ -800,6 +816,37 @@ function stageG(){
     if(stageGame >= 0 && stageGame < 10){
         ctx.drawImage(Lono,0,0,canvas.width,canvas.height);
     }
+    if(stageGame >= 0 && stageGame < 4){
+         // robot 
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctxLeft.drawImage(RobotImg,5,50,150,250);
+        ctxLeft.fillStyle = "white";
+        ctxLeft.font = " 40px 'Jersey 10'";
+        ctxLeft.fillText("Lono e' furioso,",170,75);
+        ctxLeft.fillText("una sua compagna",170,105);
+        ctxLeft.fillText("l'ha SNITCHATO...",170,140);
+    }
+    if(stageGame >= 4 && stageGame < 6){
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctxLeft.drawImage(RobotFrame2,5,50,150,250);
+        ctxLeft.fillStyle = "white";
+        ctxLeft.font = " 40px 'Jersey 10'";
+        ctxLeft.fillText("Stai andando",170,80);
+        ctxLeft.fillText("alla grande!",170,110);
+        ctxLeft.fillText("continua cosi'",170,140);
+       
+    }
+    if(stageGame >= 6 && stageGame < 10){
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctxLeft.drawImage(Robotframe3,5,50,150,250);
+        ctxLeft.fillStyle = "white";
+        ctxLeft.font = " 40px 'Jersey 10'";
+        ctxLeft.fillText("Perde colpi...",170,80);
+       
+    }
     if(stageGame >= 10 && stageGame < 23){
         ctx.drawImage(Lono2,0,0,canvas.width,canvas.height);
     }
@@ -807,6 +854,5 @@ function stageG(){
         ctx.drawImage(Lono3,0,0,canvas.width,canvas.height);
     }
 }
-
 
 
