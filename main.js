@@ -6,6 +6,10 @@ canvas.width = 800;
 canvas.height = 800;
 canvasLeft.width = 450;
 canvasLeft.height = 300;
+canvas.style.border = "3px solid #87A330";
+canvas.style.boxShadow = "0px 0px 60px #A1C349"
+//
+
 const sfondoV = new Image();
 sfondoV.src = "fuochi.png";
 const Lono = new Image();
@@ -13,18 +17,23 @@ Lono.src = "Lono1.jpg";
 const Razzismo = new Image();
 Razzismo.src = "norazzismo.png";
 const Lono2 = new Image();
-Lono2.src = "lonoMare.jpg";
+Lono2.src = "Lonospiaggia.jpg";
 const Lono3 = new Image();
-Lono3.src = "LonoFase3.png";
+Lono3.src = "Lonotvrotta.png";
 const RobotImg = new Image();
 RobotImg.src = "robot.png";
 const RobotFrame2 = new Image();
 RobotFrame2.src = "robotframe2.png";
 const Robotframe3 = new Image();
 Robotframe3.src = "robotframe3.png";
+const Robotframe4 = new Image();
+Robotframe4.src = "Robotfelice.png";
+const RobotPiange = new Image();
+RobotPiange.src = "RobotPiange.png";
+const LonoGameOver = new Image();
+LonoGameOver.src = "LonoVittoria2.png";
 
-
-
+//
 
 
 // caricamento font e poi loop
@@ -37,6 +46,9 @@ Promise.all([
     new Promise(resolve => RobotImg.onload = resolve),
     new Promise(resolve => RobotFrame2.onload = resolve),
     new Promise(resolve => Robotframe3.onload = resolve),
+    new Promise(resolve => Robotframe4.onload = resolve),
+    new Promise(resolve => RobotPiange.onload = resolve),
+     new Promise(resolve => LonoGameOver.onload = resolve),
     document.fonts.ready
 ]).then(()=>{
     ctx.font = "60px 'Sixtyfour Convergence'";
@@ -103,6 +115,10 @@ let victory = false;
 let GameOver = false;
 let lifes = 3;
 
+
+
+
+
 // listener movimento
 window.addEventListener("keydown", (e)=>{
     if(e.key == 'a') keys.a = true;
@@ -123,21 +139,38 @@ crearerectrow4();
 function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
+
     if(GameOver){
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#243010";
         ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        canvas.style.border = "none";
+        canvas.style.boxShadow = "none";
+        ctx.drawImage(LonoGameOver,350,-100 ,550,450);
         ctx.fillStyle = "red";
-        ctx.font = "60px 'Sixtyfour Convergence'";
-        ctx.textAlign = "center";
-        ctx.fillText("GAME OVER!",canvas.width / 2,canvas.height/2,);
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("EEEEEEEEAASY!!!",300,160);
+        ctx.fillText("hihihiohhhh",300,210);
+        ctx.drawImage(RobotPiange,10,canvas.height -270 ,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Lono e' stato troppo OP",220,600);
+        ctx.fillText("Sara' per la prossima",220,650);
         return;
     }
     if(victory){
-        ctx.drawImage(sfondoV,0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "rgb(255, 0, 179)";
-        ctx.font =  "60px 'Sixtyfour'";
-        ctx.textAlign = "center";
-        ctx.fillText("VICTORY!",canvas.width / 2,canvas.height/2,);
+        ctx.fillStyle = "#243010";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe4,30,canvas.height/2 + 40,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Bravissimo hai sconfitto Lono",230,400);
+        ctx.fillText("EEEEEAASY!!!!!!",230,450);
+        canvas.style.border = "none";
+        canvas.style.boxShadow = "none";
         return;
     }
     stageG();
@@ -148,7 +181,7 @@ function loop(){
     disegnarect();
     movement();
     bordiBar();
-    //Ballmovement();
+    Ballmovement();
     collisioneBar();
     collsionwall();
     drawBar();
@@ -847,12 +880,34 @@ function stageG(){
         ctxLeft.fillText("Perde colpi...",170,80);
        
     }
-    if(stageGame >= 10 && stageGame < 23){
+    if(stageGame >= 10 && stageGame < 21){
         ctx.drawImage(Lono2,0,0,canvas.width,canvas.height);
     }
-    if(stageGame >= 23){
+    if(stageGame >= 10 && stageGame < 21){
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctxLeft.drawImage(Robotframe3,5,50,150,250);
+        ctxLeft.fillStyle = "white";
+        ctxLeft.font = " 40px 'Jersey 10'";
+        ctxLeft.fillText("Si e' inzuppato,",170,80);
+        ctxLeft.fillText("tutte le scarpe",170,110);
+        ctxLeft.fillText("sta cedendo...",170,140);
+       
+    }
+    if(stageGame >= 21){
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctxLeft.drawImage(Robotframe4,5,50,150,250);
+        ctxLeft.fillStyle = "white";
+        ctxLeft.font = " 40px 'Jersey 10'";
+        ctxLeft.fillText("Sua madre ha",170,80);
+        ctxLeft.fillText("visto il pc rotto",170,110);
+        ctxLeft.fillText("e' la fine per lui..",170,140);
+       
+    }
+    if(stageGame >= 21){
         ctx.drawImage(Lono3,0,0,canvas.width,canvas.height);
     }
-}
+};
 
 
