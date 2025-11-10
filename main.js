@@ -1,5 +1,9 @@
+// canvas centrale del gioco
 const canvas = document.querySelector("#canvas");
 const canvasLeft = document.querySelector("#canvasLeft");
+//............................................................................................................................................
+
+// canvas left robot
 const ctxLeft = canvasLeft.getContext("2d");
 const ctx = canvas.getContext("2d");
 canvas.width = 800;
@@ -8,8 +12,9 @@ canvasLeft.width = 450;
 canvasLeft.height = 300;
 canvas.style.border = "3px solid #87A330";
 canvas.style.boxShadow = "0px 0px 60px #A1C349"
-//
+//............................................................................................................................................
 
+// immagini per il primo livello 
 const sfondoV = new Image();
 sfondoV.src = "fuochi.png";
 const Lono = new Image();
@@ -20,6 +25,11 @@ const Lono2 = new Image();
 Lono2.src = "Lonospiaggia.jpg";
 const Lono3 = new Image();
 Lono3.src = "Lonotvrotta.png";
+const LonoGameOver = new Image();
+LonoGameOver.src = "LonoVittoria2.png";
+//............................................................................................................................................
+
+// immagini robot e animazioni
 const RobotImg = new Image();
 RobotImg.src = "robot.png";
 const RobotFrame2 = new Image();
@@ -30,56 +40,246 @@ const Robotframe4 = new Image();
 Robotframe4.src = "Robotfelice.png";
 const RobotPiange = new Image();
 RobotPiange.src = "RobotPiange.png";
-const LonoGameOver = new Image();
-LonoGameOver.src = "LonoVittoria2.png";
+// hearts
+    const heart = new Image();
+    heart.src = "heart3.png.png";
+//............................................................................................................................................
 
-//
-
-
-// caricamento font e poi loop
+// caricamento font e immagini
 Promise.all([
+    // primo livello
     new Promise(resolve => sfondoV.onload = resolve),
     new Promise(resolve => Lono.onload = resolve),
     new Promise(resolve => Razzismo.onload = resolve),
     new Promise(resolve => Lono2.onload = resolve),
     new Promise(resolve => Lono3.onload = resolve),
+    new Promise(resolve => LonoGameOver.onload = resolve),
+    
+    // caricamento robot animazioni 
     new Promise(resolve => RobotImg.onload = resolve),
     new Promise(resolve => RobotFrame2.onload = resolve),
     new Promise(resolve => Robotframe3.onload = resolve),
     new Promise(resolve => Robotframe4.onload = resolve),
     new Promise(resolve => RobotPiange.onload = resolve),
-     new Promise(resolve => LonoGameOver.onload = resolve),
+
+    // hearts
+    new Promise(resolve => heart.onload = resolve),
+
+    // font
     document.fonts.ready
 ]).then(()=>{
-    ctx.font = "60px 'Sixtyfour Convergence'";
-    ctx.fillText("test", 0, 0);
-    ctx.font = "60px 'Sixtyfour'";
-    ctx.fillText("test", 0, 0);
+    // font robot 
     ctxLeft.font = " 28px 'Jersey 10'";
     ctxLeft.fillText("test", 0, 0);
-    
-    loop();
+    Home();
 })
+//............................................................................................................................................
 
+//                                                          VARIABILI GENERALI 
 
+// variabile per devinire lo stato del gioco home..lvl1..lvl2..lvl3
+let StatoDellaHome = 0 // 0 titolo; 1 spiegazione; ecc..
 
-// variabile stage gioco
-let stageGame = 0;
-// variabile power
-let powerx = 380;
-let powery = 175;
-let powersize = 50;
+// listener space bar per movimento dialoghi
+window.addEventListener("keyup", (e)=>{
+    if(e.code === 'Space') StatoDellaHome ++;
+
+})
+// freccia dialoghi
+let frecciaTimer = 0;
+let frecciaOffset = 0;
+// variabili movimento
+let velocita = 10;
+let keys = {
+    a:false,
+    d:false,
+}
+
+// listener movimento
+window.addEventListener("keydown", (e)=>{
+    if(e.key == 'a') keys.a = true;
+    if(e.key == 'd') keys.d = true;
+})
+window.addEventListener("keyup", (e)=>{
+    if(e.key == 'a') keys.a = false;
+    if(e.key == 'd') keys.d = false;
+})
 // variabili barra giocatore
 let barSize = 200;
 let barH = 25;
 let barX = canvas.width / 2 - 100;
 let barY = canvas.height - barH - 40;
 
+// vite giocatore
+let lifes = 3;
+
+//............................................................................................................................................
+
+//                                                        FUNZIONI GENERALI
+function movement(){
+    if(keys.d){barX += velocita;} 
+    if(keys.a){barX -= velocita;}
+}
+
+function drawBar(){
+    ctx.save();
+    ctx.fillStyle = "white";
+    ctx.fillRect(barX,barY,barSize,barH);
+    ctx.strokeStyle = '#87A330';
+    ctx.shadowColor = "#87A330";
+    ctx.lineWidth = "2"
+    ctx.shadowBlur = 12
+    ctx.strokeRect(barX,barY,barSize,barH);
+    ctx.stroke();
+    ctx.restore(); 
+}
+function bordiBar(){
+    let margin = 10;
+    barX = Math.max(margin, Math.min(canvas.width-barSize-margin,barX));
+}
+
+function hearts(){
+    if(lifes == 3){
+        ctx.drawImage(heart,20,20,30,30);
+        ctx.drawImage(heart,55,20,30,30);
+        ctx.drawImage(heart,90,20,30,30);
+    }
+    if(lifes == 2){
+        ctx.drawImage(heart,20,20,30,30);
+        ctx.drawImage(heart,55,20,30,30);
+    }
+    if(lifes == 1){
+        ctx.drawImage(heart,20,20,30,30);
+    }
+
+}
+//............................................................................................................................................
+//                                                        FUNZIONI HOME
+function Home(){
+    //canvas.style.border = "none";
+    canvas.style.boxShadow = "none";
+    if(StatoDellaHome == 0){
+        ctx.strokeStyle = '#87A330';
+        ctx.shadowColor = "#87A330";
+        ctx.lineWidth = "2"
+        ctx.shadowBlur = 12
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.fillStyle = "white";
+        ctx.font = " 100px 'Jersey 10'";
+        ctx.fillText("CACCHIATE",canvas.width/2-200,canvas.height/2- 160);
+        ctx.fillText("DI",canvas.width/2-200,canvas.height/2 - 80);
+        ctx.fillText("FAMIGLIA",canvas.width/2-200,canvas.height/2 );
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("THE GAME",canvas.width/2-200,canvas.height/2 + 50 );
+        ctx.fillText("Press the space bar to continue...",canvas.width/2-200,canvas.height - 30 );
+    }
+    if(StatoDellaHome == 1){
+
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe4,30,canvas.height/2 - 150,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 50px 'Jersey 10'";
+        ctx.fillText("Ciao sono Qwertyasd e ",canvas.width/2-200,canvas.height/2- 160);
+        ctx.fillText("ti guidero' in tutta la durata",canvas.width/2-200,canvas.height/2- 100);
+        ctx.fillText("del gioco...",canvas.width/2-200,canvas.height/2- 40);
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 - 20, 355 + frecciaOffset);
+
+    }
+    if(StatoDellaHome == 2){
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(RobotFrame2,30,canvas.height/2 - 150,150,250);
+        ctx.drawImage(heart,200,250,30,30);
+        ctx.drawImage(heart,235,250,30,30);
+        ctx.drawImage(heart,270,250,30,30);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("queste sono le tue vite,",canvas.width/2-120,canvas.height/2 - 80);
+        ctx.fillText("potrebbe essere facile all'inizio.",canvas.width/2-120,canvas.height/2 -40);
+        ctx.fillText("ma non perderne troppe,",canvas.width/2-120,canvas.height/2);
+        ctx.fillText("ne hai solo 3...",canvas.width/2-120,canvas.height/2 + 40);
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 + 70,canvas.height/2 + 35 + frecciaOffset);
+     
+    }
+    if(StatoDellaHome == 3){
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe3,30,canvas.height/2 - 150,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Puoi rimbalzare ",canvas.width/2-120,canvas.height/2 - 80);
+        ctx.fillText("in tutti i bordi che vedi ora,",canvas.width/2-120,canvas.height/2 -40);
+        ctx.fillText("tranne in quello in basso",canvas.width/2-120,canvas.height/2);
+        ctx.fillText("se lo tocchi perderai vite...",canvas.width/2-120,canvas.height/2 + 40);
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 + 255,canvas.height/2 + 35 + frecciaOffset);
+        ctx.fillStyle = "red"
+        ctx.fillRect(10,canvas.height - 20,canvas.width - 20,10);
+
+    }
+    if(StatoDellaHome == 4){
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe3,30,canvas.height/2 - 150,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("questa e' la tua arma, la BARRA",canvas.width/2-180,canvas.height/2 - 280);
+        ctx.fillText("se la colpisci in mezzo la palla andra'",canvas.width/2-180,canvas.height/2 -240);
+        ctx.fillText("su dritta, se colpita ai lati",canvas.width/2-180,canvas.height/2 - 200);
+        ctx.fillText("rimbalzera' a seconda di quanto",canvas.width/2-180,canvas.height/2-160);
+        ctx.fillText("a lato e' stata presa...",canvas.width/2-180,canvas.height/2 - 120);
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 + 125,canvas.height/2 - 125 + frecciaOffset);
+        ctx.fillStyle = "red";
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.fillRect(barX,barY,barSize,barH);
+        ctx.strokeRect(barX,barY,barSize,barH);
+        ctx.stroke();
+        ctx.restore(); 
+        
+
+    }
+    console.log(StatoDellaHome)
+    // valore oscilazzione freccia dialogo
+    frecciaTimer += 0.05;
+    frecciaOffset = Math.sin(frecciaTimer * 3) * 3;
+    // loop
+    requestAnimationFrame(Home);
+}
+
+//............................................................................................................................................
+
+//                                                        VARIABILI 1 LIVELLO LONO
+
+// variabile stage gioco
+let stageGame = 0;
+
+// variabile power
+let powerx = 380;
+let powery = 175;
+let powersize = 50;
+
 // variabili pallina power
 let pallax = powerx + 28;
 let pallay = powery + 30; 
 let pallina2 = false;
 let vivaBall2 = true;
+
 // variabili pallina
 let ballX =canvas.width/2;
 let ballY =canvas.height/2 - 100;
@@ -102,41 +302,22 @@ let rettangoli3emezzo = [{x:458,y:190,Rsize:Rsize,Rheight:Rheight, vita:2,color:
 let rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight, vita:2,color:'white'}];
 let vite = 2;
 
-
-
-// variabili movimento
-let velocita = 10;
-let keys = {
-    a:false,
-    d:false,
-}
-// variabile lifes e gameover o victory
-let victory = false;
-let GameOver = false;
-let lifes = 3;
-
-
-
-
-
-// listener movimento
-window.addEventListener("keydown", (e)=>{
-    if(e.key == 'a') keys.a = true;
-    if(e.key == 'd') keys.d = true;
-})
-window.addEventListener("keyup", (e)=>{
-    if(e.key == 'a') keys.a = false;
-    if(e.key == 'd') keys.d = false;
-})
+// creazione blocchi del primo livello
 crearerectrow1();
 crearerectrow2();
 crearerectrow3();
 crearerectrow3emezzo();
 crearerectrow4();
 
-//loop
+// variabile lifes e gameover o victory
+let victory = false;
+let GameOver = false;
+//............................................................................................................................................
 
-function loop(){
+//                                                          FUNZIONI SOLO PER IL PRIMO LIVELLO
+
+// loop per far partire il primo livello
+function Livello1(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
 
@@ -173,6 +354,7 @@ function loop(){
         canvas.style.boxShadow = "none";
         return;
     }
+    Go();
     stageG();
     vittoria();
     controlloLose();
@@ -187,97 +369,9 @@ function loop(){
     drawBar();
     Ball2()
     drawPower();
-    requestAnimationFrame(loop);
-}
-
-
-function movement(){
-    if(keys.d){barX += velocita;} 
-    if(keys.a){barX -= velocita;}
-}
-function Ballmovement(){
-    ballX += balldirectionX;
-    ballY += balldirectionY;
-    if(pallina2){
-        pallax += ball2directionX;
-        pallay += ball2directionY;
-    }}
-function drawBall(){
-    ctx.save();
-    ctx.fillStyle = 'white'
-    ctx.beginPath();
-    ctx.arc(ballX,ballY, radius,0,Math.PI * 2)
-    ctx.fill();
-    ctx.restore();
-}
-function drawBar(){
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.fillRect(barX,barY,barSize,barH);
-    ctx.strokeStyle = '#87A330';
-    ctx.shadowColor = "#87A330";
-    ctx.lineWidth = "2"
-    ctx.shadowBlur = 12
-    ctx.strokeRect(barX,barY,barSize,barH);
-    ctx.stroke();
-    ctx.restore(); 
-}
-function bordiBar(){
-    let margin = 10;
-    barX = Math.max(margin, Math.min(canvas.width-barSize-margin,barX));
-}
-function collisioneBar(){
-    if(ballY + radius >= barY && ballX + radius > barX && barX + barSize > ballX + radius){
-       
-        let centerdistance = ballX - (barX + barSize/2);
-        let normalized = centerdistance/(barSize/2);
-
-        balldirectionX = normalized * 6;
-        balldirectionY = -Math.abs(balldirectionY)
-    }
-    if(pallay + radius >= barY && pallax + radius > barX && barX + barSize > pallax + radius){
-       
-        let centerdistance = pallax - (barX + barSize/2);
-        let normalized = centerdistance/(barSize/2);
-
-        ball2directionX = normalized * 6;
-        ball2directionY = -Math.abs(ball2directionY)
-    }
-}
-
-function collsionwall(){
-    if(ballX + radius >= canvas.width){
-        balldirectionX = -balldirectionX;
-    }
-    if(ballX - radius < radius){
-        balldirectionX = -balldirectionX;
-    }
-    if(ballY - radius < 0){
-        balldirectionY = -balldirectionY;
-    }
-        // ball 2
-    if(pallax + radius >= canvas.width){
-        ball2directionX = -ball2directionX;
-    }
-    if(pallax - radius < radius){
-        ball2directionX = -ball2directionX;
-    }
-    if(pallay - radius < 0){
-        ball2directionY = -ball2directionY;
-    }
-}
-
-function controlloLose(){
-    if(ballY + radius > canvas.height){
-        lifes -= 1;
-        ballX =canvas.width/2;
-        ballY =canvas.height/2 - 100;
-    }
-    if(pallay + radius > canvas.height){
-        vivaBall2 = false;
-    }
-    
-}
+    requestAnimationFrame(Livello1);
+};
+// creazione rows
 function crearerectrow1(){
     for(let i = 1; i < 7; i++){
     let x = rettangoli[i-1].x + Rsize + margin;
@@ -313,6 +407,26 @@ function crearerectrow4(){
     rettangoli4.push({x,y,Rsize,Rheight,vita:2, color:"white"})
     }
 }
+
+// power e pallina power
+function drawPower(){
+    if(!pallina2){ctx.drawImage(Razzismo,powerx,powery,powersize,powersize);}
+    if(ballX + radius > powerx && ballX - radius < powerx + powersize 
+       && ballY - radius < powery + powersize && ballY + radius > powery)
+       {pallina2 = true;}
+}
+function Ball2(){
+    if(pallina2 && vivaBall2){
+        ctx.save();
+        ctx.fillStyle = 'yellow'
+        ctx.beginPath();
+        ctx.arc(pallax,pallay, radius,0,Math.PI * 2)
+        ctx.fill();
+        ctx.restore(); 
+    }
+}
+
+// disegnare blocchi e le loro collisioni
 function disegnarect(){
                //BALL 1!!! 
     //riga 4
@@ -804,46 +918,15 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }}}
-};
-function hearts(){
-    const heart = new Image();
-    heart.src = "heart3.png.png";
-    if(lifes == 3){
-        ctx.drawImage(heart,20,20,30,30);
-        ctx.drawImage(heart,55,20,30,30);
-        ctx.drawImage(heart,90,20,30,30);
-    }
-    if(lifes == 2){
-        ctx.drawImage(heart,20,20,30,30);
-        ctx.drawImage(heart,55,20,30,30);
-    }
-    if(lifes == 1){
-        ctx.drawImage(heart,20,20,30,30);
-    }
-    if(lifes == 0){
-        GameOver = true;
-    }
 }
+
+// vittori
 function vittoria(){
     if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
         victory = true;
 }
-function drawPower(){
-    if(!pallina2){ctx.drawImage(Razzismo,powerx,powery,powersize,powersize);}
-    if(ballX + radius > powerx && ballX - radius < powerx + powersize 
-       && ballY - radius < powery + powersize && ballY + radius > powery)
-       {pallina2 = true;}
-}
-function Ball2(){
-    if(pallina2 && vivaBall2){
-        ctx.save();
-        ctx.fillStyle = 'yellow'
-        ctx.beginPath();
-        ctx.arc(pallax,pallay, radius,0,Math.PI * 2)
-        ctx.fill();
-        ctx.restore(); 
-    }
-}
+
+// stage primo livello
 function stageG(){
     
     if(stageGame >= 0 && stageGame < 10){
@@ -909,5 +992,92 @@ function stageG(){
         ctx.drawImage(Lono3,0,0,canvas.width,canvas.height);
     }
 };
+
+// gameover lifes
+function Go(){
+    if(lifes == 0){
+        GameOver = true;
+    }
+}
+
+// colisione muri pallina primo lvl
+function collsionwall(){
+    if(ballX + radius >= canvas.width){
+        balldirectionX = -balldirectionX;
+    }
+    if(ballX - radius < radius){
+        balldirectionX = -balldirectionX;
+    }
+    if(ballY - radius < 0){
+        balldirectionY = -balldirectionY;
+    }
+        // ball 2
+    if(pallax + radius >= canvas.width){
+        ball2directionX = -ball2directionX;
+    }
+    if(pallax - radius < radius){
+        ball2directionX = -ball2directionX;
+    }
+    if(pallay - radius < 0){
+        ball2directionY = -ball2directionY;
+    }
+}
+
+// perdita vite pallina primo lvl
+function controlloLose(){
+    if(ballY + radius > canvas.height){
+        lifes -= 1;
+        ballX =canvas.width/2;
+        ballY =canvas.height/2 - 100;
+    }
+    if(pallay + radius > canvas.height){
+        vivaBall2 = false;
+    }
+    
+}
+
+// collisione con barra pallaina primo lvl
+function collisioneBar(){
+    if(ballY + radius >= barY && ballX + radius > barX && barX + barSize > ballX + radius){
+       
+        let centerdistance = ballX - (barX + barSize/2);
+        let normalized = centerdistance/(barSize/2);
+
+        balldirectionX = normalized * 6;
+        balldirectionY = -Math.abs(balldirectionY)
+    }
+    if(pallay + radius >= barY && pallax + radius > barX && barX + barSize > pallax + radius){
+       
+        let centerdistance = pallax - (barX + barSize/2);
+        let normalized = centerdistance/(barSize/2);
+
+        ball2directionX = normalized * 6;
+        ball2directionY = -Math.abs(ball2directionY)
+    }
+}
+
+// disegno pallina primo lvl e suo movimento
+function drawBall(){
+    ctx.save();
+    ctx.fillStyle = 'white'
+    ctx.beginPath();
+    ctx.arc(ballX,ballY, radius,0,Math.PI * 2)
+    ctx.fill();
+    ctx.restore();
+}
+function Ballmovement(){
+    ballX += balldirectionX;
+    ballY += balldirectionY;
+    if(pallina2){
+        pallax += ball2directionX;
+        pallay += ball2directionY;
+}
+}
+//............................................................................................................................................
+
+
+
+
+
 
 
