@@ -1,7 +1,7 @@
 // canvas centrale del gioco
 const canvas = document.querySelector("#canvas");
 const canvasLeft = document.querySelector("#canvasLeft");
-//............................................................................................................................................
+//...........................................................................................
 
 // canvas left robot
 const ctxLeft = canvasLeft.getContext("2d");
@@ -12,7 +12,7 @@ canvasLeft.width = 450;
 canvasLeft.height = 300;
 canvas.style.border = "3px solid #87A330";
 canvas.style.boxShadow = "0px 0px 60px #A1C349"
-//............................................................................................................................................
+//...........................................................................................
 
 // immagini per il primo livello 
 const sfondoV = new Image();
@@ -27,7 +27,7 @@ const Lono3 = new Image();
 Lono3.src = "Lonotvrotta.png";
 const LonoGameOver = new Image();
 LonoGameOver.src = "LonoVittoria2.png";
-//............................................................................................................................................
+//...........................................................................................
 
 // immagini robot e animazioni
 const RobotImg = new Image();
@@ -41,9 +41,9 @@ Robotframe4.src = "Robotfelice.png";
 const RobotPiange = new Image();
 RobotPiange.src = "RobotPiange.png";
 // hearts
-    const heart = new Image();
-    heart.src = "heart3.png.png";
-//............................................................................................................................................
+const heart = new Image();
+heart.src = "heart3.png.png";
+//...........................................................................................
 
 // caricamento font e immagini
 Promise.all([
@@ -73,17 +73,32 @@ Promise.all([
     ctxLeft.fillText("test", 0, 0);
     Home();
 })
-//............................................................................................................................................
-
+//...........................................................................................
 //                                                          VARIABILI GENERALI 
 
 // variabile per devinire lo stato del gioco home..lvl1..lvl2..lvl3
 let StatoDellaHome = 0 // 0 titolo; 1 spiegazione; ecc..
+let Lvl1 = false;
+let lvl1finito = false;
+let lvl2 = false;
 
 // listener space bar per movimento dialoghi
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'Space') StatoDellaHome ++;
 
+})
+window.addEventListener("keyup", (e)=>{
+    if(e.code === 'Enter'){
+        Lvl1 = true;
+    }})
+window.addEventListener("keyup", (e)=>{
+    if(e.code === 'KeyR')
+        location.reload();
+})
+window.addEventListener("keyup", (e)=>{
+    if((e.code === 'Digit2' || e.code === 'Numpad2') && lvl1finito)
+    livello2();
+    console.log("ciao")
 })
 // freccia dialoghi
 let frecciaTimer = 0;
@@ -113,7 +128,7 @@ let barY = canvas.height - barH - 40;
 // vite giocatore
 let lifes = 3;
 
-//............................................................................................................................................
+//...........................................................................................
 
 //                                                        FUNZIONI GENERALI
 function movement(){
@@ -125,8 +140,8 @@ function drawBar(){
     ctx.save();
     ctx.fillStyle = "white";
     ctx.fillRect(barX,barY,barSize,barH);
-    ctx.strokeStyle = '#87A330';
-    ctx.shadowColor = "#87A330";
+    ctx.strokeStyle = 'black';
+    ctx.shadowColor = "black";
     ctx.lineWidth = "2"
     ctx.shadowBlur = 12
     ctx.strokeRect(barX,barY,barSize,barH);
@@ -137,7 +152,6 @@ function bordiBar(){
     let margin = 10;
     barX = Math.max(margin, Math.min(canvas.width-barSize-margin,barX));
 }
-
 function hearts(){
     if(lifes == 3){
         ctx.drawImage(heart,20,20,30,30);
@@ -153,28 +167,35 @@ function hearts(){
     }
 
 }
-//............................................................................................................................................
+//...........................................................................................
 //                                                        FUNZIONI HOME
 function Home(){
-    //canvas.style.border = "none";
+    if(Lvl1)return Livello1();
+    canvas.style.border = "none";
     canvas.style.boxShadow = "none";
+    ctx.strokeStyle = '#87A330';
+    ctx.shadowColor = "#87A330";
+    ctx.lineWidth = "2"
+    ctx.shadowBlur = 12
     if(StatoDellaHome == 0){
-        ctx.strokeStyle = '#87A330';
-        ctx.shadowColor = "#87A330";
-        ctx.lineWidth = "2"
-        ctx.shadowBlur = 12
+        
         ctx.fillStyle = "#243010"
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010"
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
         ctx.fillStyle = "white";
         ctx.font = " 100px 'Jersey 10'";
-        ctx.fillText("CACCHIATE",canvas.width/2-200,canvas.height/2- 160);
-        ctx.fillText("DI",canvas.width/2-200,canvas.height/2 - 80);
-        ctx.fillText("FAMIGLIA",canvas.width/2-200,canvas.height/2 );
+        ctx.fillText("CACCHIATE",canvas.width/2-250,canvas.height/2- 160);
+        ctx.fillText("DI",canvas.width/2-250,canvas.height/2 - 80);
+        ctx.fillText("FAMIGLIA",canvas.width/2-250,canvas.height/2 );
         ctx.font = " 40px 'Jersey 10'";
-        ctx.fillText("THE GAME",canvas.width/2-200,canvas.height/2 + 50 );
-        ctx.fillText("Press the space bar to continue...",canvas.width/2-200,canvas.height - 30 );
+        ctx.fillText("THE GAME",canvas.width/2-250,canvas.height/2 + 50 );
+
+        ctx.fillText("Press the space bar to continue...",canvas.width/2-315,canvas.height - 80 );
+        ctx.fillText("or press enter to skip the introduction...",canvas.width/2-315,canvas.height - 40 );
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 + 160,canvas.height - 85 + frecciaOffset);
+        ctx.fillText("▼", canvas.width/2 + 250,canvas.height - 45 + frecciaOffset);
     }
     if(StatoDellaHome == 1){
 
@@ -212,6 +233,8 @@ function Home(){
      
     }
     if(StatoDellaHome == 3){
+        canvas.style.border = "3px solid #87A330";
+        canvas.style.boxShadow = "0px 0px 60px #A1C349"
         ctx.fillStyle = "#243010"
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010"
@@ -237,24 +260,57 @@ function Home(){
         ctx.drawImage(Robotframe3,30,canvas.height/2 - 150,150,250);
         ctx.fillStyle = "white";
         ctx.font = " 40px 'Jersey 10'";
-        ctx.fillText("questa e' la tua arma, la BARRA",canvas.width/2-180,canvas.height/2 - 280);
-        ctx.fillText("se la colpisci in mezzo la palla andra'",canvas.width/2-180,canvas.height/2 -240);
-        ctx.fillText("su dritta, se colpita ai lati",canvas.width/2-180,canvas.height/2 - 200);
-        ctx.fillText("rimbalzera' a seconda di quanto",canvas.width/2-180,canvas.height/2-160);
-        ctx.fillText("a lato e' stata presa...",canvas.width/2-180,canvas.height/2 - 120);
+        ctx.fillText("questa e' la tua arma, la BARRA,",canvas.width/2-180,canvas.height/2 - 280);
+        ctx.fillText("muovila con i tasti 'a' e 'w'.",canvas.width/2-180,canvas.height/2 -240);
+        ctx.fillText("Se la colpisci in mezzo la palla andra'",canvas.width/2-180,canvas.height/2 -200);
+        ctx.fillText("su dritta, se colpita ai lati",canvas.width/2-180,canvas.height/2 - 160);
+        ctx.fillText("rimbalzera' a seconda di quanto",canvas.width/2-180,canvas.height/2-120);
+        ctx.fillText("a lato e' stata presa...",canvas.width/2-180,canvas.height/2 - 80);
         ctx.font = "15px Arial";
-        ctx.fillText("▼", canvas.width/2 + 125,canvas.height/2 - 125 + frecciaOffset);
+        ctx.fillText("▼", canvas.width/2 + 125,canvas.height/2 - 85 + frecciaOffset);
         ctx.fillStyle = "red";
-        ctx.save();
         ctx.fillStyle = "white";
         ctx.fillRect(barX,barY,barSize,barH);
         ctx.strokeRect(barX,barY,barSize,barH);
         ctx.stroke();
-        ctx.restore(); 
-        
+        }
+    if(StatoDellaHome == 5){
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe3,30,canvas.height/2 ,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("per vincere distruggi tutti",canvas.width/2-180,canvas.height/2 - 80);
+        ctx.fillText("i rettangoli colorati, serve piu",canvas.width/2-180,canvas.height/2 -40);
+        ctx.fillText("di una hit per toglierli di torno.",canvas.width/2-180,canvas.height/2);
+        ctx.fillText("Ci sono dei PowerUp che puoi ",canvas.width/2-180,canvas.height/2 + 40);
+        ctx.fillText("utilizzare a tuo vantaggio...",canvas.width/2-180,canvas.height/2 + 80);
+        ctx.fillStyle = "yellow"
+        ctx.fillRect(200,100,100,20);
+        ctx.fillStyle = "lightgreen"
+        ctx.fillRect(305,100,100,20);
+        ctx.fillStyle = "violet"
+        ctx.fillRect(410,100,100,20);
+        ctx.fillStyle = "orange"
+        ctx.fillRect(515,100,100,20);
+         ctx.fillStyle = "white"
+        ctx.font = "15px Arial";
+        ctx.fillText("▼", canvas.width/2 + 205,canvas.height/2 + 75 + frecciaOffset);
+        }
+    if(StatoDellaHome == 6){
+        ctx.fillStyle = "#243010"
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010"
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.drawImage(Robotframe4,30,canvas.height/2 ,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Perfetto mi sembri pronto!",canvas.width/2-180,canvas.height/2 - 80);
+        ctx.fillText("Clicca 'invio' per giocare.",canvas.width/2-180,canvas.height/2 -40);
+        }
 
-    }
-    console.log(StatoDellaHome)
     // valore oscilazzione freccia dialogo
     frecciaTimer += 0.05;
     frecciaOffset = Math.sin(frecciaTimer * 3) * 3;
@@ -262,7 +318,7 @@ function Home(){
     requestAnimationFrame(Home);
 }
 
-//............................................................................................................................................
+//...........................................................................................
 
 //                                                        VARIABILI 1 LIVELLO LONO
 
@@ -312,7 +368,7 @@ crearerectrow4();
 // variabile lifes e gameover o victory
 let victory = false;
 let GameOver = false;
-//............................................................................................................................................
+//...........................................................................................
 
 //                                                          FUNZIONI SOLO PER IL PRIMO LIVELLO
 
@@ -320,8 +376,11 @@ let GameOver = false;
 function Livello1(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
-
     if(GameOver){
+        ctx.strokeStyle = 'black';
+        ctx.shadowColor = "black";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
         ctx.fillStyle = "#243010";
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010";
@@ -333,14 +392,20 @@ function Livello1(){
         ctx.font = " 40px 'Jersey 10'";
         ctx.fillText("EEEEEEEEAASY!!!",300,160);
         ctx.fillText("hihihiohhhh",300,210);
-        ctx.drawImage(RobotPiange,10,canvas.height -270 ,150,250);
+        ctx.drawImage(RobotPiange,30,canvas.height -300 ,150,250);
         ctx.fillStyle = "white";
         ctx.font = " 40px 'Jersey 10'";
         ctx.fillText("Lono e' stato troppo OP",220,600);
-        ctx.fillText("Sara' per la prossima",220,650);
+        ctx.fillText("Sara' per la prossima.",220,650);
+        ctx.fillText("Premi 'r' per riprovare...",220,700);
         return;
     }
     if(victory){
+        ctx.save();
+        ctx.strokeStyle = '#87A330';
+        ctx.shadowColor = "#87A330";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
         ctx.fillStyle = "#243010";
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010";
@@ -350,25 +415,28 @@ function Livello1(){
         ctx.font = " 40px 'Jersey 10'";
         ctx.fillText("Bravissimo hai sconfitto Lono",230,400);
         ctx.fillText("EEEEEAASY!!!!!!",230,450);
+        ctx.fillText("Premi '2' per andare al prossimo livello!",230,500);
         canvas.style.border = "none";
         canvas.style.boxShadow = "none";
-        return;
+        ctx.restore();
+        return lvl1finito = true;
     }
+    
     Go();
     stageG();
     vittoria();
     controlloLose();
     hearts();
-    drawBall();
-    disegnarect();
     movement();
     bordiBar();
     Ballmovement();
+    drawBall();
     collisioneBar();
     collsionwall();
     drawBar();
     Ball2()
     drawPower();
+    disegnarect();
     requestAnimationFrame(Livello1);
 };
 // creazione rows
@@ -429,6 +497,11 @@ function Ball2(){
 // disegnare blocchi e le loro collisioni
 function disegnarect(){
                //BALL 1!!! 
+    //  neon
+    ctx.strokeStyle = 'black';
+    ctx.shadowColor = "black";
+    ctx.lineWidth = "3"
+    ctx.shadowBlur = 12
     //riga 4
     for(let i = rettangoli4.length - 1; i >= 0; i--){
         
@@ -442,6 +515,10 @@ function disegnarect(){
     if(rettangoli4[i].vita == 1){
         rettangoli4[i].color = 'red'
     }
+    if(rettangoli4[i].vita == 2){
+        rettangoli4[i].color = 'violet'
+    }
+
     ctx.fillStyle = rettangoli4[i].color
     ctx.fillRect(rettangoli4[i].x,rettangoli4[i].y,rettangoli4[i].Rsize,rettangoli4[i].Rheight);
 
@@ -493,6 +570,9 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     if(rettangoli3[i].vita == 1){
         rettangoli3[i].color = 'red'
     }
+    if(rettangoli3[i].vita == 2){
+        rettangoli3[i].color = 'yellow'
+    }
     ctx.fillStyle = rettangoli3[i].color
     ctx.fillRect(rettangoli3[i].x,rettangoli3[i].y,rettangoli3[i].Rsize,rettangoli3[i].Rheight);
     
@@ -540,6 +620,9 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     }
     if(rettangoli3emezzo[i].vita == 1){
         rettangoli3emezzo[i].color = 'red'
+    }
+    if(rettangoli3emezzo[i].vita == 2){
+        rettangoli3emezzo[i].color = 'yellow'
     }
     ctx.fillStyle = rettangoli3emezzo[i].color
     ctx.fillRect(rettangoli3emezzo[i].x,rettangoli3emezzo[i].y,rettangoli3emezzo[i].Rsize,rettangoli3emezzo[i].Rheight);
@@ -589,6 +672,9 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     if(rettangoli2[i].vita == 1){
         rettangoli2[i].color = 'red'
     }
+    if(rettangoli2[i].vita == 2){
+        rettangoli2[i].color = 'lightgreen'
+    }
     ctx.fillStyle = rettangoli2[i].color
     ctx.fillRect(rettangoli2[i].x,rettangoli2[i].y,rettangoli2[i].Rsize,rettangoli2[i].Rheight);
     
@@ -637,6 +723,9 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     if(rettangoli[i].vita == 1){
         rettangoli[i].color = 'red'
     }
+    if(rettangoli[i].vita == 2){
+        rettangoli[i].color = 'orange'
+    }
     ctx.fillStyle = rettangoli[i].color
     ctx.fillRect(rettangoli[i].x,rettangoli[i].y,rettangoli[i].Rsize,rettangoli[i].Rheight);
     
@@ -672,9 +761,9 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
         ballY += balldirectionY * 0.3;
     }}
 
-           
+    //.................................................................................................     
     
-                // BALL 2 !!!
+    //                                    BALL 2 !!!
                 //riga 4
     if(vivaBall2){
     for(let i = rettangoli4.length - 1; i >= 0; i--){
@@ -688,6 +777,9 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     }
     if(rettangoli4[i].vita == 1){
         rettangoli4[i].color = 'red'
+    }
+    if(rettangoli4[i].vita == 2){
+        rettangoli4[i].color = 'violet'
     }
     ctx.fillStyle = rettangoli4[i].color
     ctx.fillRect(rettangoli4[i].x,rettangoli4[i].y,rettangoli4[i].Rsize,rettangoli4[i].Rheight);
@@ -740,6 +832,9 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     if(rettangoli3[i].vita == 1){
         rettangoli3[i].color = 'red'
     }
+    if(rettangoli3[i].vita == 2){
+        rettangoli3[i].color = 'yellow'
+    }
     ctx.fillStyle = rettangoli3[i].color
     ctx.fillRect(rettangoli3[i].x,rettangoli3[i].y,rettangoli3[i].Rsize,rettangoli3[i].Rheight);
     
@@ -787,6 +882,9 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     }
     if(rettangoli3emezzo[i].vita == 1){
         rettangoli3emezzo[i].color = 'red'
+    }
+    if(rettangoli3emezzo[i].vita == 2){
+        rettangoli3emezzo[i].color = 'yellow'
     }
     ctx.fillStyle = rettangoli3emezzo[i].color
     ctx.fillRect(rettangoli3emezzo[i].x,rettangoli3emezzo[i].y,rettangoli3emezzo[i].Rsize,rettangoli3emezzo[i].Rheight);
@@ -836,6 +934,10 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     if(rettangoli2[i].vita == 1){
         rettangoli2[i].color = 'red'
     }
+    if(rettangoli2[i].vita == 2){
+        rettangoli2[i].color = 'lightgreen'
+    }
+
     ctx.fillStyle = rettangoli2[i].color
     ctx.fillRect(rettangoli2[i].x,rettangoli2[i].y,rettangoli2[i].Rsize,rettangoli2[i].Rheight);
     
@@ -884,6 +986,9 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     if(rettangoli[i].vita == 1){
         rettangoli[i].color = 'red'
     }
+    if(rettangoli[i].vita == 2){
+        rettangoli[i].color = 'orange'
+    }
     ctx.fillStyle = rettangoli[i].color
     ctx.fillRect(rettangoli[i].x,rettangoli[i].y,rettangoli[i].Rsize,rettangoli[i].Rheight);
     
@@ -922,7 +1027,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
 
 // vittori
 function vittoria(){
-    if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
+   // if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
         victory = true;
 }
 
@@ -1058,12 +1163,18 @@ function collisioneBar(){
 
 // disegno pallina primo lvl e suo movimento
 function drawBall(){
-    ctx.save();
-    ctx.fillStyle = 'white'
+
+    ctx.save();            
+    ctx.shadowBlur = 0;     
+    ctx.shadowColor = 'none';
+    ctx.strokeStyle = 'none'; 
+    ctx.lineWidth = 0;
     ctx.beginPath();
+    ctx.fillStyle = 'white'
     ctx.arc(ballX,ballY, radius,0,Math.PI * 2)
     ctx.fill();
     ctx.restore();
+   
 }
 function Ballmovement(){
     ballX += balldirectionX;
@@ -1073,9 +1184,18 @@ function Ballmovement(){
         pallay += ball2directionY;
 }
 }
-//............................................................................................................................................
+//...........................................................................................
 
+//                               FUNZIONI LVL2
 
+function livello2(){
+    ctx.fillStyle= "white"
+    ctxLeft.fillStyle= "white"
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+    ctx.drawImage(Robotframe4,30,canvas.height/2 + 40,150,250);
+    requestAnimationFrame(livello2);
+}
 
 
 
