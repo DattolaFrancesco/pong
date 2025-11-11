@@ -24,10 +24,15 @@ Razzismo.src = "norazzismo.png";
 const Lono2 = new Image();
 Lono2.src = "Lonospiaggia.jpg";
 const Lono3 = new Image();
-Lono3.src = "Lonotvrotta.png";
+Lono3.src = "LonoSalotto.jpg";
 const LonoGameOver = new Image();
 LonoGameOver.src = "LonoVittoria2.png";
 //...........................................................................................
+// immagini per il secondo livello
+const FraInizio = new Image();
+FraInizio.src = "FraInizio.jpeg";
+const Robot2Braccio = new Image();
+Robot2Braccio.src = "robot2Braccio.png";
 
 // immagini robot e animazioni
 const RobotImg = new Image();
@@ -40,6 +45,7 @@ const Robotframe4 = new Image();
 Robotframe4.src = "Robotfelice.png";
 const RobotPiange = new Image();
 RobotPiange.src = "RobotPiange.png";
+
 // hearts
 const heart = new Image();
 heart.src = "heart3.png.png";
@@ -55,12 +61,17 @@ Promise.all([
     new Promise(resolve => Lono3.onload = resolve),
     new Promise(resolve => LonoGameOver.onload = resolve),
     
+    // secondo livello
+    new Promise(resolve => FraInizio.onload = resolve),
+
     // caricamento robot animazioni 
     new Promise(resolve => RobotImg.onload = resolve),
     new Promise(resolve => RobotFrame2.onload = resolve),
     new Promise(resolve => Robotframe3.onload = resolve),
     new Promise(resolve => Robotframe4.onload = resolve),
     new Promise(resolve => RobotPiange.onload = resolve),
+    new Promise(resolve => Robot2Braccio.onload = resolve),
+    
 
     // hearts
     new Promise(resolve => heart.onload = resolve),
@@ -71,7 +82,9 @@ Promise.all([
     // font robot 
     ctxLeft.font = " 28px 'Jersey 10'";
     ctxLeft.fillText("test", 0, 0);
-    Home();
+    //Home();
+    livello2()
+   
 })
 //...........................................................................................
 //                                                          VARIABILI GENERALI 
@@ -84,12 +97,17 @@ let lvl2 = false;
 
 // listener space bar per movimento dialoghi
 window.addEventListener("keyup", (e)=>{
-    if(e.code === 'Space') StatoDellaHome ++;
+    if(e.code === 'Space'){
+        StatoDellaHome ++;
+
+
+    }
 
 })
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'Enter'){
         Lvl1 = true;
+
     }})
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'KeyR')
@@ -185,17 +203,17 @@ function Home(){
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
         ctx.fillStyle = "white";
         ctx.font = " 100px 'Jersey 10'";
-        ctx.fillText("CACCHIATE",canvas.width/2-250,canvas.height/2- 160);
-        ctx.fillText("DI",canvas.width/2-250,canvas.height/2 - 80);
-        ctx.fillText("FAMIGLIA",canvas.width/2-250,canvas.height/2 );
+        ctx.fillText("CACCHIATE",0,canvas.height/2- 160);
+        ctx.fillText("DI",0,canvas.height/2 - 80);
+        ctx.fillText("FAMIGLIA",0,canvas.height/2 );
         ctx.font = " 40px 'Jersey 10'";
-        ctx.fillText("THE GAME",canvas.width/2-250,canvas.height/2 + 50 );
+        ctx.fillText("THE GAME",0,canvas.height/2 + 50 );
 
-        ctx.fillText("Press the space bar to continue...",canvas.width/2-315,canvas.height - 80 );
-        ctx.fillText("or press enter to skip the introduction...",canvas.width/2-315,canvas.height - 40 );
+        ctx.fillText("Press the space bar to continue...",0,canvas.height - 80 );
+        ctx.fillText("or press enter to skip the introduction...",0,canvas.height - 40 );
         ctx.font = "15px Arial";
-        ctx.fillText("▼", canvas.width/2 + 160,canvas.height - 85 + frecciaOffset);
-        ctx.fillText("▼", canvas.width/2 + 250,canvas.height - 45 + frecciaOffset);
+        ctx.fillText("▼", canvas.width/2 + 80,canvas.height - 85 + frecciaOffset);
+        ctx.fillText("▼", canvas.width/2 + 175,canvas.height - 45 + frecciaOffset);
     }
     if(StatoDellaHome == 1){
 
@@ -323,7 +341,8 @@ function Home(){
 //                                                        VARIABILI 1 LIVELLO LONO
 
 // variabile stage gioco
-let stageGame = 0;
+let stageGame1 = 0;
+let CreazioneLvl1 = true;
 
 // variabile power
 let powerx = 380;
@@ -359,11 +378,13 @@ let rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight, vita:2,color:'white'
 let vite = 2;
 
 // creazione blocchi del primo livello
+if(CreazioneLvl1){
 crearerectrow1();
 crearerectrow2();
 crearerectrow3();
 crearerectrow3emezzo();
 crearerectrow4();
+}
 
 // variabile lifes e gameover o victory
 let victory = false;
@@ -376,7 +397,10 @@ let GameOver = false;
 function Livello1(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
+    canvas.style.border = "3px solid #87A330";
+    canvas.style.boxShadow = "0px 0px 60px #87A330";
     if(GameOver){
+        CreazioneLvl1 = false;
         ctx.strokeStyle = 'black';
         ctx.shadowColor = "black";
         ctx.lineWidth = "3"
@@ -423,7 +447,7 @@ function Livello1(){
     }
     
     Go();
-    stageG();
+    stageG1();
     vittoria();
     controlloLose();
     hearts();
@@ -509,7 +533,7 @@ function disegnarect(){
     hitY = false;
     if(rettangoli4[i].vita == 0){
         rettangoli4.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli4[i].vita == 1){
@@ -564,7 +588,7 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3[i].vita == 0){
         rettangoli3.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli3[i].vita == 1){
@@ -615,7 +639,7 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3emezzo[i].vita == 0){
         rettangoli3emezzo.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli3emezzo[i].vita == 1){
@@ -666,7 +690,7 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli2[i].vita == 0){
         rettangoli2.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli2[i].vita == 1){
@@ -717,7 +741,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli[i].vita == 0){
         rettangoli.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli[i].vita == 1){
@@ -772,7 +796,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli4[i].vita == 0){
         rettangoli4.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli4[i].vita == 1){
@@ -826,7 +850,7 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3[i].vita == 0){
         rettangoli3.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli3[i].vita == 1){
@@ -877,7 +901,7 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli3emezzo[i].vita == 0){
         rettangoli3emezzo.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli3emezzo[i].vita == 1){
@@ -928,7 +952,7 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli2[i].vita == 0){
         rettangoli2.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli2[i].vita == 1){
@@ -980,7 +1004,7 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     hitY = false;
     if(rettangoli[i].vita == 0){
         rettangoli.splice(i,1);
-        stageGame ++;
+        stageGame1 ++;
         continue;
     }
     if(rettangoli[i].vita == 1){
@@ -1027,73 +1051,73 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
 
 // vittori
 function vittoria(){
-   // if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
+    if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
         victory = true;
 }
 
 // stage primo livello
-function stageG(){
+function stageG1(){
     
-    if(stageGame >= 0 && stageGame < 10){
+    if(stageGame1 >= 0 && stageGame1 < 10){
         ctx.drawImage(Lono,0,0,canvas.width,canvas.height);
     }
-    if(stageGame >= 0 && stageGame < 4){
+    if(stageGame1 >= 0 && stageGame1 < 4){
          // robot 
         ctxLeft.fillStyle = "#243010";
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-        ctxLeft.drawImage(RobotImg,5,50,150,250);
+        ctxLeft.drawImage(RobotImg,15,canvasLeft.height -100,150,100);
         ctxLeft.fillStyle = "white";
-        ctxLeft.font = " 40px 'Jersey 10'";
-        ctxLeft.fillText("Lono e' furioso,",170,75);
-        ctxLeft.fillText("una sua compagna",170,105);
-        ctxLeft.fillText("l'ha SNITCHATO...",170,140);
+        ctxLeft.font = " 35px 'Jersey 10'";
+        ctxLeft.fillText("Lono e' furioso,",170,200);
+        ctxLeft.fillText("una sua compagna",170,225);
+        ctxLeft.fillText("l'ha SNITCHATO...",170,250);
     }
-    if(stageGame >= 4 && stageGame < 6){
+    if(stageGame1 >= 4 && stageGame1 < 6){
         ctxLeft.fillStyle = "#243010";
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-        ctxLeft.drawImage(RobotFrame2,5,50,150,250);
+        ctxLeft.drawImage(RobotFrame2,15,canvasLeft.height -100,150,100);
         ctxLeft.fillStyle = "white";
         ctxLeft.font = " 40px 'Jersey 10'";
-        ctxLeft.fillText("Stai andando",170,80);
-        ctxLeft.fillText("alla grande!",170,110);
-        ctxLeft.fillText("continua cosi'",170,140);
+        ctxLeft.fillText("Stai andando",170,200);
+        ctxLeft.fillText("alla grande!",170,225);
+        ctxLeft.fillText("continua cosi'",170,250);
        
     }
-    if(stageGame >= 6 && stageGame < 10){
+    if(stageGame1 >= 6 && stageGame1 < 10){
         ctxLeft.fillStyle = "#243010";
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-        ctxLeft.drawImage(Robotframe3,5,50,150,250);
+        ctxLeft.drawImage(Robotframe3,15,canvasLeft.height -100,150,100);
         ctxLeft.fillStyle = "white";
         ctxLeft.font = " 40px 'Jersey 10'";
-        ctxLeft.fillText("Perde colpi...",170,80);
+        ctxLeft.fillText("Perde colpi...",170,200);
        
     }
-    if(stageGame >= 10 && stageGame < 21){
+    if(stageGame1 >= 10 && stageGame1 < 21){
         ctx.drawImage(Lono2,0,0,canvas.width,canvas.height);
     }
-    if(stageGame >= 10 && stageGame < 21){
+    if(stageGame1 >= 10 && stageGame1 < 21){
         ctxLeft.fillStyle = "#243010";
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-        ctxLeft.drawImage(Robotframe3,5,50,150,250);
+        ctxLeft.drawImage(Robotframe3,15,canvasLeft.height -100,150,100);
         ctxLeft.fillStyle = "white";
         ctxLeft.font = " 40px 'Jersey 10'";
-        ctxLeft.fillText("Si e' inzuppato,",170,80);
-        ctxLeft.fillText("tutte le scarpe",170,110);
-        ctxLeft.fillText("sta cedendo...",170,140);
+        ctxLeft.fillText("Si e' inzuppato,",170,200);
+        ctxLeft.fillText("tutte le scarpe",170,225);
+        ctxLeft.fillText("sta cedendo...",170,250);
        
     }
-    if(stageGame >= 21){
+    if(stageGame1 >= 21){
         ctxLeft.fillStyle = "#243010";
         ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-        ctxLeft.drawImage(Robotframe4,5,50,150,250);
+        ctxLeft.drawImage(Robotframe4,15,canvasLeft.height -100,150,100);
         ctxLeft.fillStyle = "white";
         ctxLeft.font = " 40px 'Jersey 10'";
-        ctxLeft.fillText("Sua madre ha",170,80);
-        ctxLeft.fillText("visto il pc rotto",170,110);
-        ctxLeft.fillText("e' la fine per lui..",170,140);
+        ctxLeft.fillText("Sua madre ha",170,200);
+        ctxLeft.fillText("visto il pc rotto",170,225);
+        ctxLeft.fillText("e' la fine per lui..",170,250);
        
     }
-    if(stageGame >= 21){
+    if(stageGame1 >= 21){
         ctx.drawImage(Lono3,0,0,canvas.width,canvas.height);
     }
 };
@@ -1185,18 +1209,134 @@ function Ballmovement(){
 }
 }
 //...........................................................................................
+// variabili livello 2 
+let stageGame2 = false;
+
+// rettangoli lvl2
+let lvl2rettango = [{x:50,y:120,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli2 = [{x:50,y:155,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli3 = [{x:50,y:190,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli3emezzo = [{x:458,y:190,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
 
 //                               FUNZIONI LVL2
-
+lvl2crearerectrow4();
 function livello2(){
-    ctx.fillStyle= "white"
-    ctxLeft.fillStyle= "white"
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
-    ctx.drawImage(Robotframe4,30,canvas.height/2 + 40,150,250);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
+    stageG2();
+    lvl2disegnaRect();
+    controlloLose();
+    hearts();
+    movement();
+    bordiBar();
+    Ballmovement();
+    drawBall();
+    collisioneBar();
+    collsionwall();
+    drawBar();
+    if(stageGame2){
+
+    }
+    canvas.style.border = "3px solid #87A330";
+    canvas.style.boxShadow = "0px 0px 60px #87A330";
+    // valore oscilazzione freccia dialogo
+    frecciaTimer += 0.05;
+    frecciaOffset = Math.sin(frecciaTimer * 3) * 3;
     requestAnimationFrame(livello2);
 }
+function stageG2(){
+    if(!stageGame2){
+    ctx.fillStyle= "#243010"
+    ctxLeft.fillStyle= "#243010"
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+    ctxLeft.drawImage(Robotframe4,15,canvasLeft.height -100,150,100);
+    ctxLeft.fillStyle = "white";
+    ctxLeft.font = " 35px 'Jersey 10'";
+    ctxLeft.fillText("Stai  per  affrontare",180,200);
+    ctxLeft.fillText("il  FRANK...",180,225);
+    ctxLeft.fillText("premi  'space'",180,250);
+    ctxLeft.fillText("per  sfidarlo...",180,275);
+    ctxLeft.font = "10px Arial";
+    ctxLeft.fillText("▼", 360,270 + frecciaOffset);
+    ctx.drawImage(FraInizio,0,0,canvas.width,canvas.height);
+    ctxLeft.drawImage(Robot2Braccio,-80,-10,300,150);
+    ctxLeft.font = " 25px 'Jersey 10'";
+    ctxLeft.fillStyle = "rgb(128, 253, 255)"
+    ctxLeft.fillText("c'è un PowerUp",220,50);
+    ctxLeft.fillText("e anche qualcos'altro...",220,70);
+    ctxLeft.fillText("attento!",220,90);
+}
+}
+function lvl2crearerectrow4(){
+    for(let i = 1; i < 7; i++){
+    let x = lvl2rettangoli4[i-1].x + Rsize + margin;
+    let y = 225;
+    lvl2rettangoli4.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    }
+}
+function lvl2disegnaRect(){
+    
+    // neon 
+    ctx.strokeStyle = 'black';
+    ctx.shadowColor = "black";
+    ctx.lineWidth = "3"
+    ctx.shadowBlur = 12
+    //riga 4
+    for(let i = lvl2rettangoli4.length - 1; i >= 0; i--){
+        
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli4[i].vita == 0){
+        lvl2rettangoli4.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli4[i].vita == 1){
+        lvl2rettangoli4[i].color = 'red'
+    }
+    if(lvl2rettangoli4[i].vita == 2){
+        lvl2rettangoli4[i].color = 'violet'
+    }
 
+    ctx.fillStyle = lvl2rettangoli4[i].color
+    ctx.fillRect(lvl2rettangoli4[i].x,lvl2rettangoli4[i].y,lvl2rettangoli4[i].Rsize,lvl2rettangoli4[i].Rheight);
+
+
+    //parte sinistra
+    if(ballY < lvl2rettangoli4[i].y + Rheight && ballY > lvl2rettangoli4[i].y && ballX + radius > lvl2rettangoli4[i].x && ballX < lvl2rettangoli4[i].x )
+        {hitX = true; lvl2rettangoli4[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli4[i].x && lvl2rettangoli4[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli4[i].y &&  ballY + radius < lvl2rettangoli4[i].y + Rheight){
+       hitY = true;lvl2rettangoli4[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli4[i].x && lvl2rettangoli4[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli4[i].y + Rheight && ballY - radius > lvl2rettangoli4[i].y){
+       hitY = true;lvl2rettangoli4[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli4[i].y + Rheight && ballY > lvl2rettangoli4[i].y && ballX - radius < lvl2rettangoli4[i].x + Rsize && ballX - radius > lvl2rettangoli4[i].x ){
+        hitX = true;lvl2rettangoli4[i].vita -= 1;
+    }
+
+    
+
+    if (hitX && hitY) {
+
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+}
 
 
 
