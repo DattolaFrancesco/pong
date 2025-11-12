@@ -33,6 +33,14 @@ const FraInizio = new Image();
 FraInizio.src = "FraInizio.jpeg";
 const Robot2Braccio = new Image();
 Robot2Braccio.src = "robot2Braccio.png";
+const tazzaCalda = new Image();
+tazzaCalda.src = "tazzaCalda.png";
+const Bomb = new Image();
+Bomb.src = "bomb.png";
+const esplosione = new Image();
+esplosione.src = "esplosione.png";
+const FrankGover = new Image();
+FrankGover.src = "frankGover.png";
 
 // immagini robot e animazioni
 const RobotImg = new Image();
@@ -63,6 +71,10 @@ Promise.all([
     
     // secondo livello
     new Promise(resolve => FraInizio.onload = resolve),
+    new Promise(resolve => tazzaCalda.onload = resolve),
+    new Promise(resolve => Bomb.onload = resolve),
+    new Promise(resolve => esplosione.onload = resolve),
+    new Promise(resolve => FrankGover.onload = resolve),
 
     // caricamento robot animazioni 
     new Promise(resolve => RobotImg.onload = resolve),
@@ -84,6 +96,7 @@ Promise.all([
     ctxLeft.fillText("test", 0, 0);
     //Home();
     livello2()
+    
    
 })
 //...........................................................................................
@@ -92,15 +105,15 @@ Promise.all([
 // variabile per devinire lo stato del gioco home..lvl1..lvl2..lvl3
 let StatoDellaHome = 0 // 0 titolo; 1 spiegazione; ecc..
 let Lvl1 = false;
-let lvl1finito = false;
+let lvl1finito = true
 let lvl2 = false;
 
 // listener space bar per movimento dialoghi
 window.addEventListener("keyup", (e)=>{
-    if(e.code === 'Space'){
-        StatoDellaHome ++;
-
-
+    if(e.code === 'Space')StatoDellaHome ++;
+    if(lvl1finito && e.code === 'Space'){
+        inizioLvl2 = true;
+        stageGame2 = 1
     }
 
 })
@@ -116,7 +129,6 @@ window.addEventListener("keyup", (e)=>{
 window.addEventListener("keyup", (e)=>{
     if((e.code === 'Digit2' || e.code === 'Numpad2') && lvl1finito)
     livello2();
-    console.log("ciao")
 })
 // freccia dialoghi
 let frecciaTimer = 0;
@@ -153,7 +165,6 @@ function movement(){
     if(keys.d){barX += velocita;} 
     if(keys.a){barX -= velocita;}
 }
-
 function drawBar(){
     ctx.save();
     ctx.fillStyle = "white";
@@ -357,7 +368,7 @@ let vivaBall2 = true;
 
 // variabili pallina
 let ballX =canvas.width/2;
-let ballY =canvas.height/2 - 100;
+let ballY =canvas.height/2
 let radius = 10;
 let balldirectionX = (Math.round(Math.random())* 2 - 1)*8;
 let balldirectionY = 8;
@@ -1157,11 +1168,17 @@ function controlloLose(){
     if(ballY + radius > canvas.height){
         lifes -= 1;
         ballX =canvas.width/2;
-        ballY =canvas.height/2 - 100;
+        ballY =canvas.height/2;
+        if(powerPresoCL){
+        balldirectionX /= 2;
+        balldirectionY /= 2;
+        powerPresoCL = false
+    }
     }
     if(pallay + radius > canvas.height){
         vivaBall2 = false;
     }
+
     
 }
 
@@ -1210,34 +1227,93 @@ function Ballmovement(){
 }
 //...........................................................................................
 // variabili livello 2 
-let stageGame2 = false;
+let stageGame2 = 0;
+let inizioLvl2 = false;
+let powerPreso = false;
+let powerPresoCL = false;
+let lvl2power = false;
+let lvl2powerx = 576;
+let lvl2powery = 243
+let lvl2bomb = false;
+let bombPreso = false;
+let lvl2bombx = 275;
+let lvl2bomby = 195;
+let esplosioneTime = 0;
+
+
 
 // rettangoli lvl2
-let lvl2rettango = [{x:50,y:120,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
-let lvl2rettangoli2 = [{x:50,y:155,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
-let lvl2rettangoli3 = [{x:50,y:190,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
-let lvl2rettangoli3emezzo = [{x:458,y:190,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
-let lvl2rettangoli4 = [{x:50,y:225,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli = [{x:50,y:150,Rsize:Rsize,Rheight:Rheight, vita:4,color:'white'}];
+let lvl2rettangoli1emezzo = [{x:50,y:175,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli1 = [{x:152,y:200,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli2emezzo = [{x:50,y:250,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli2 = [{x:152,y:225,Rsize:Rsize,Rheight:Rheight, vita:3,color:'white'}];
+let lvl2rettangoli3 = [{x:152,y:300,Rsize:Rsize,Rheight:Rheight, vita:2,color:'white'}];
+let lvl2rettangoli3emezzo = [{x:50,y:275,Rsize:Rsize,Rheight:Rheight, vita:2,color:'white'}];
+let lvl2rettangoli4 = [{x:50,y:325,Rsize:Rsize,Rheight:Rheight, vita:1,color:'red'}];
 
 //                               FUNZIONI LVL2
 lvl2crearerectrow4();
+lvl2crearerectrow3();
+lvl2crearerectrow3emezzo();
+lvl2crearerectrow2();
+lvl2crearerectrow2emezzo();
+lvl2crearerectrow1();
+lvl2crearerectrow1emezzo();
+lvl2crearerectrow();
+
 function livello2(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
+    if(lifes == 0){
+        ctx.fillStyle = "#243010";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        canvas.style.border = "none";
+        canvas.style.boxShadow = "none";
+        ctx.strokeStyle = 'red';
+        ctx.shadowColor = "red";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
+        ctx.drawImage(FrankGover,0,canvas.height-700,550,650);
+        ctx.strokeStyle = 'white';
+        ctx.shadowColor = "#243010";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 0
+        ctx.fillStyle = "#243010";
+        ctx.fillRect(540,195,20,90);
+        ctx.strokeStyle = 'black';
+        ctx.shadowColor = "black";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
+        ctx.fillStyle = "red";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("GoooooDooooo!!!",20,260);
+        ctx.fillText("NABBO hahaha",20,300);
+        ctxLeft.drawImage(Robot2Braccio,-80,-10,300,150);
+        ctxLeft.fillStyle = "rgb(128, 253, 255)"
+        ctxLeft.fillText("la bomba ti toglie",220,50);
+        ctxLeft.fillText("una vita...",220,70);
+        ctxLeft.fillText("idiota!",220,90);
+
+        return;
+    }
+    if(inizioLvl2)Ballmovement();
     stageG2();
+    if(!powerPreso)lvl2drawpower();
+    if(!bombPreso)lvl2drawBomb();
+    esplosioneBomb();
     lvl2disegnaRect();
     controlloLose();
     hearts();
+    if(bombPreso)esplosioneBomb();
     movement();
     bordiBar();
-    Ballmovement();
-    drawBall();
+    lvl2drawBall();
     collisioneBar();
     collsionwall();
     drawBar();
-    if(stageGame2){
-
-    }
     canvas.style.border = "3px solid #87A330";
     canvas.style.boxShadow = "0px 0px 60px #87A330";
     // valore oscilazzione freccia dialogo
@@ -1246,7 +1322,7 @@ function livello2(){
     requestAnimationFrame(livello2);
 }
 function stageG2(){
-    if(!stageGame2){
+    if(stageGame2 == 0){
     ctx.fillStyle= "#243010"
     ctxLeft.fillStyle= "#243010"
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1268,12 +1344,92 @@ function stageG2(){
     ctxLeft.fillText("e anche qualcos'altro...",220,70);
     ctxLeft.fillText("attento!",220,90);
 }
+    if(stageGame2 == 1){
+    ctx.fillStyle= "#243010"
+    ctxLeft.fillStyle= "#243010"
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+    ctxLeft.drawImage(Robotframe4,15,canvasLeft.height -100,150,100);
+    ctxLeft.fillStyle = "white";
+    ctxLeft.font = " 35px 'Jersey 10'";
+    ctxLeft.fillText("Forza!!",180,200);
+    ctx.drawImage(FraInizio,0,0,canvas.width,canvas.height);
+    ctxLeft.drawImage(Robot2Braccio,-80,-10,300,150);
+    ctxLeft.font = " 25px 'Jersey 10'";
+    ctxLeft.fillStyle = "rgb(128, 253, 255)"
+    ctxLeft.fillText("toccando la tazza Frank",220,50);
+    ctxLeft.fillText("si scotterà, potresti",220,70);
+    ctxLeft.fillText("usarlo a tuo vantaggio!",220,90);
+}
+}
+function lvl2drawBall(){
+
+    ctx.save();            
+    ctx.shadowBlur = 0;     
+    ctx.shadowColor = 'none';
+    ctx.strokeStyle = 'none'; 
+    ctx.lineWidth = 0;
+    ctx.beginPath();
+    ctx.fillStyle = 'white'
+    ctx.arc(ballX,ballY, radius,0,Math.PI * 2)
+    ctx.fill();
+    ctx.restore();
+   
 }
 function lvl2crearerectrow4(){
     for(let i = 1; i < 7; i++){
     let x = lvl2rettangoli4[i-1].x + Rsize + margin;
-    let y = 225;
-    lvl2rettangoli4.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    let y = 325;
+    lvl2rettangoli4.push({x,y,Rsize,Rheight,vita:1, color:"red"})
+    }
+}
+function lvl2crearerectrow3(){
+    for(let i = 1; i < 3; i++){
+    let x = lvl2rettangoli3[i-1].x + Rsize*2 + margin*2-1;
+    let y = 300;
+    lvl2rettangoli3.push({x,y,Rsize,Rheight,vita:2, color:"white"})
+    }
+}
+function lvl2crearerectrow3emezzo(){
+    for(let i = 1; i < 4; i++){
+    let x = lvl2rettangoli3emezzo[i-1].x + Rsize*2 + margin*2-1;
+    let y = 275;
+    lvl2rettangoli3emezzo.push({x,y,Rsize,Rheight,vita:2, color:"white"})
+    }
+}
+function lvl2crearerectrow2(){
+    for(let i = 1; i < 3; i++){
+    let x = lvl2rettangoli2[i-1].x + Rsize*2 + margin*2;
+    let y = lvl2rettangoli2[i-1].y;
+    lvl2rettangoli2.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    }
+}
+function lvl2crearerectrow2emezzo(){
+    for(let i = 1; i < 4; i++){
+    let x = lvl2rettangoli2emezzo[i-1].x + Rsize*2 + margin*2-1;
+    let y = lvl2rettangoli2emezzo[i-1].y;
+    lvl2rettangoli2emezzo.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    }
+}
+function lvl2crearerectrow1(){
+    for(let i = 1; i < 3; i++){
+    let x = lvl2rettangoli1[i-1].x + Rsize*2 + margin*2;
+    let y = lvl2rettangoli1[i-1].y;
+    lvl2rettangoli1.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    }
+}
+function lvl2crearerectrow1emezzo(){
+    for(let i = 1; i < 4; i++){
+    let x = lvl2rettangoli1emezzo[i-1].x + Rsize*2 + margin*2;
+    let y = lvl2rettangoli1emezzo[i-1].y;
+    lvl2rettangoli1emezzo.push({x,y,Rsize,Rheight,vita:3, color:"white"})
+    }
+}
+function lvl2crearerectrow(){
+    for(let i = 1; i < 7; i++){
+    let x = lvl2rettangoli[i-1].x + Rsize + margin;
+    let y = lvl2rettangoli[i-1].y;
+    lvl2rettangoli.push({x,y,Rsize,Rheight,vita:4, color:"white"})
     }
 }
 function lvl2disegnaRect(){
@@ -1294,9 +1450,6 @@ function lvl2disegnaRect(){
     }
     if(lvl2rettangoli4[i].vita == 1){
         lvl2rettangoli4[i].color = 'red'
-    }
-    if(lvl2rettangoli4[i].vita == 2){
-        lvl2rettangoli4[i].color = 'violet'
     }
 
     ctx.fillStyle = lvl2rettangoli4[i].color
@@ -1320,8 +1473,6 @@ function lvl2disegnaRect(){
         hitX = true;lvl2rettangoli4[i].vita -= 1;
     }
 
-    
-
     if (hitX && hitY) {
 
         ballX += balldirectionX * 0.3;
@@ -1336,6 +1487,414 @@ function lvl2disegnaRect(){
         ballY += balldirectionY * 0.3;
     }
 }
+// riga 3
+for(let i = lvl2rettangoli3.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli3[i].vita == 0){
+        lvl2rettangoli3.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli3[i].vita == 1){
+        lvl2rettangoli3[i].color = 'red'
+    }
+    if(lvl2rettangoli3[i].vita == 2){
+        lvl2rettangoli3[i].color = '#ff7402ff'
+    }
+    ctx.fillStyle = lvl2rettangoli3[i].color
+    ctx.fillRect(lvl2rettangoli3[i].x,lvl2rettangoli3[i].y,lvl2rettangoli3[i].Rsize,lvl2rettangoli3[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli3[i].y + Rheight && ballY > lvl2rettangoli3[i].y && ballX + radius > lvl2rettangoli3[i].x && ballX < lvl2rettangoli3[i].x )
+        {hitX = true; lvl2rettangoli3[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli3[i].x && lvl2rettangoli3[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli3[i].y &&  ballY + radius < lvl2rettangoli3[i].y + Rheight){
+       hitY = true;lvl2rettangoli3[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli3[i].x && lvl2rettangoli3[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli3[i].y + Rheight && ballY - radius > lvl2rettangoli3[i].y){
+       hitY = true;lvl2rettangoli3[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli3[i].y + Rheight && ballY > lvl2rettangoli3[i].y && ballX - radius < lvl2rettangoli3[i].x + Rsize && ballX - radius > lvl2rettangoli3[i].x ){
+        hitX = true;lvl2rettangoli3[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 3 e mezzo
+for(let i = lvl2rettangoli3emezzo.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli3emezzo[i].vita == 0){
+        lvl2rettangoli3emezzo.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli3emezzo[i].vita == 1){
+        lvl2rettangoli3emezzo[i].color = 'red'
+    }
+    if(lvl2rettangoli3emezzo[i].vita == 2){
+        lvl2rettangoli3emezzo[i].color = '#ff7402ff'
+    }
+    ctx.fillStyle = lvl2rettangoli3emezzo[i].color
+    ctx.fillRect(lvl2rettangoli3emezzo[i].x,lvl2rettangoli3emezzo[i].y,lvl2rettangoli3emezzo[i].Rsize,lvl2rettangoli3emezzo[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli3emezzo[i].y + Rheight && ballY > lvl2rettangoli3emezzo[i].y && ballX + radius > lvl2rettangoli3emezzo[i].x && ballX < lvl2rettangoli3emezzo[i].x )
+        {hitX = true; lvl2rettangoli3emezzo[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli3emezzo[i].x && lvl2rettangoli3emezzo[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli3emezzo[i].y &&  ballY + radius < lvl2rettangoli3emezzo[i].y + Rheight){
+       hitY = true;lvl2rettangoli3emezzo[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli3emezzo[i].x && lvl2rettangoli3emezzo[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli3emezzo[i].y + Rheight && ballY - radius > lvl2rettangoli3emezzo[i].y){
+       hitY = true;lvl2rettangoli3emezzo[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli3emezzo[i].y + Rheight && ballY > lvl2rettangoli3emezzo[i].y && ballX - radius < lvl2rettangoli3emezzo[i].x + Rsize && ballX - radius > lvl2rettangoli3emezzo[i].x ){
+        hitX = true;lvl2rettangoli3emezzo[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 2
+for(let i = lvl2rettangoli2.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli2[i].vita == 0){
+        lvl2rettangoli2.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli2[i].vita == 1){
+        lvl2rettangoli2[i].color = 'red'
+    }
+    if(lvl2rettangoli2[i].vita == 2){
+        lvl2rettangoli2[i].color = '#ff7402ff'
+    }
+    if(lvl2rettangoli2[i].vita == 3){
+        lvl2rettangoli2[i].color = '#83f52c'
+    }
+    ctx.fillStyle = lvl2rettangoli2[i].color
+    ctx.fillRect(lvl2rettangoli2[i].x,lvl2rettangoli2[i].y,lvl2rettangoli2[i].Rsize,lvl2rettangoli2[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli2[i].y + Rheight && ballY > lvl2rettangoli2[i].y && ballX + radius > lvl2rettangoli2[i].x && ballX < lvl2rettangoli2[i].x )
+        {hitX = true; lvl2rettangoli2[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli2[i].x && lvl2rettangoli2[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli2[i].y &&  ballY + radius < lvl2rettangoli2[i].y + Rheight){
+       hitY = true;lvl2rettangoli2[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli2[i].x && lvl2rettangoli2[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli2[i].y + Rheight && ballY - radius > lvl2rettangoli2[i].y){
+       hitY = true;lvl2rettangoli2[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli2[i].y + Rheight && ballY > lvl2rettangoli2[i].y && ballX - radius < lvl2rettangoli2[i].x + Rsize && ballX - radius > lvl2rettangoli2[i].x ){
+        hitX = true;lvl2rettangoli2[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 2 e mezzo
+for(let i = lvl2rettangoli2emezzo.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli2emezzo[i].vita == 0){
+        lvl2rettangoli2emezzo.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli2emezzo[i].vita == 1){
+        lvl2rettangoli2emezzo[i].color = 'red'
+    }
+    if(lvl2rettangoli2emezzo[i].vita == 2){
+        lvl2rettangoli2emezzo[i].color = '#ff7402ff'
+    }
+    if(lvl2rettangoli2emezzo[i].vita == 3){
+        lvl2rettangoli2emezzo[i].color = '#83f52c'
+    }
+    ctx.fillStyle = lvl2rettangoli2emezzo[i].color
+    ctx.fillRect(lvl2rettangoli2emezzo[i].x,lvl2rettangoli2emezzo[i].y,lvl2rettangoli2emezzo[i].Rsize,lvl2rettangoli2emezzo[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli2emezzo[i].y + Rheight && ballY > lvl2rettangoli2emezzo[i].y && ballX + radius > lvl2rettangoli2emezzo[i].x && ballX < lvl2rettangoli2emezzo[i].x )
+        {hitX = true; lvl2rettangoli2emezzo[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli2emezzo[i].x && lvl2rettangoli2emezzo[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli2emezzo[i].y &&  ballY + radius < lvl2rettangoli2emezzo[i].y + Rheight){
+       hitY = true;lvl2rettangoli2emezzo[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli2emezzo[i].x && lvl2rettangoli2emezzo[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli2emezzo[i].y + Rheight && ballY - radius > lvl2rettangoli2emezzo[i].y){
+       hitY = true;lvl2rettangoli2emezzo[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli2emezzo[i].y + Rheight && ballY > lvl2rettangoli2emezzo[i].y && ballX - radius < lvl2rettangoli2emezzo[i].x + Rsize && ballX - radius > lvl2rettangoli2emezzo[i].x ){
+        hitX = true;lvl2rettangoli2emezzo[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 1
+for(let i = lvl2rettangoli1.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli1[i].vita == 0){
+        lvl2rettangoli1.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli1[i].vita == 1){
+        lvl2rettangoli1[i].color = 'red'
+    }
+    if(lvl2rettangoli1[i].vita == 2){
+        lvl2rettangoli1[i].color = '#ff7402ff'
+    }
+    if(lvl2rettangoli1[i].vita == 3){
+        lvl2rettangoli1[i].color = '#2cb2f5ff'
+    }
+    ctx.fillStyle = lvl2rettangoli1[i].color
+    ctx.fillRect(lvl2rettangoli1[i].x,lvl2rettangoli1[i].y,lvl2rettangoli1[i].Rsize,lvl2rettangoli1[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli1[i].y + Rheight && ballY > lvl2rettangoli1[i].y && ballX + radius > lvl2rettangoli1[i].x && ballX < lvl2rettangoli1[i].x )
+        {hitX = true; lvl2rettangoli1[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli1[i].x && lvl2rettangoli1[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli1[i].y &&  ballY + radius < lvl2rettangoli1[i].y + Rheight){
+       hitY = true;lvl2rettangoli1[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli1[i].x && lvl2rettangoli1[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli1[i].y + Rheight && ballY - radius > lvl2rettangoli1[i].y){
+       hitY = true;lvl2rettangoli1[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli1[i].y + Rheight && ballY > lvl2rettangoli1[i].y && ballX - radius < lvl2rettangoli1[i].x + Rsize && ballX - radius > lvl2rettangoli1[i].x ){
+        hitX = true;lvl2rettangoli1[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 1 e mezzo
+for(let i = lvl2rettangoli1emezzo.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli1emezzo[i].vita == 0){
+        lvl2rettangoli1emezzo.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli1emezzo[i].vita == 1){
+        lvl2rettangoli1emezzo[i].color = 'red'
+    }
+    if(lvl2rettangoli1emezzo[i].vita == 2){
+        lvl2rettangoli1emezzo[i].color = '#ff7402ff'
+    }
+    if(lvl2rettangoli1emezzo[i].vita == 3){
+        lvl2rettangoli1emezzo[i].color = '#2cb2f5ff'
+    }
+    ctx.fillStyle = lvl2rettangoli1emezzo[i].color
+    ctx.fillRect(lvl2rettangoli1emezzo[i].x,lvl2rettangoli1emezzo[i].y,lvl2rettangoli1emezzo[i].Rsize,lvl2rettangoli1emezzo[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli1emezzo[i].y + Rheight && ballY > lvl2rettangoli1emezzo[i].y && ballX + radius > lvl2rettangoli1emezzo[i].x && ballX < lvl2rettangoli1emezzo[i].x )
+        {hitX = true; lvl2rettangoli1emezzo[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli1emezzo[i].x && lvl2rettangoli1emezzo[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli1emezzo[i].y &&  ballY + radius < lvl2rettangoli1emezzo[i].y + Rheight){
+       hitY = true;lvl2rettangoli1emezzo[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli1emezzo[i].x && lvl2rettangoli1emezzo[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli1emezzo[i].y + Rheight && ballY - radius > lvl2rettangoli1emezzo[i].y){
+       hitY = true;lvl2rettangoli1emezzo[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli1emezzo[i].y + Rheight && ballY > lvl2rettangoli1emezzo[i].y && ballX - radius < lvl2rettangoli1emezzo[i].x + Rsize && ballX - radius > lvl2rettangoli1emezzo[i].x ){
+        hitX = true;lvl2rettangoli1emezzo[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+// riga 0
+for(let i = lvl2rettangoli.length - 1; i >= 0; i--){
+    hitX = false;
+    hitY = false;
+    if(lvl2rettangoli[i].vita == 0){
+        lvl2rettangoli.splice(i,1);
+        continue;
+    }
+    if(lvl2rettangoli[i].vita == 1){
+        lvl2rettangoli[i].color = 'red'
+    }
+    if(lvl2rettangoli[i].vita == 2){
+        lvl2rettangoli[i].color = '#ff7402ff'
+    }
+    if(lvl2rettangoli[i].vita == 3){
+        lvl2rettangoli[i].color = '#2cb2f5ff'
+    }
+    if(lvl2rettangoli[i].vita == 4){
+        lvl2rettangoli[i].color = '#9400f7ff'
+    }
+    ctx.fillStyle = lvl2rettangoli[i].color
+    ctx.fillRect(lvl2rettangoli[i].x,lvl2rettangoli[i].y,lvl2rettangoli[i].Rsize,lvl2rettangoli[i].Rheight);
+    
+    //parte sinistra
+    if(ballY < lvl2rettangoli[i].y + Rheight && ballY > lvl2rettangoli[i].y && ballX + radius > lvl2rettangoli[i].x && ballX < lvl2rettangoli[i].x )
+        {hitX = true; lvl2rettangoli[i].vita -= 1;
+    }
+    // parte alta
+    else if(ballX > lvl2rettangoli[i].x && lvl2rettangoli[i].x + Rsize > ballX && ballY + radius > lvl2rettangoli[i].y &&  ballY + radius < lvl2rettangoli[i].y + Rheight){
+       hitY = true;lvl2rettangoli[i].vita -= 1;
+    }
+    // parte bassa
+    else if(ballX > lvl2rettangoli[i].x && lvl2rettangoli[i].x + Rsize > ballX && ballY - radius < lvl2rettangoli[i].y + Rheight && ballY - radius > lvl2rettangoli[i].y){
+       hitY = true;lvl2rettangoli[i].vita -= 1;
+    } 
+    // parte destra 
+    else if(ballY < lvl2rettangoli[i].y + Rheight && ballY > lvl2rettangoli[i].y && ballX - radius < lvl2rettangoli[i].x + Rsize && ballX - radius > lvl2rettangoli[i].x ){
+        hitX = true;lvl2rettangoli[i].vita -= 1;
+    }
+    
+    if (hitX && hitY) {
+  
+        balldirectionX = -balldirectionX;
+        balldirectionY = -balldirectionY;
+        ballX += balldirectionX * 0.3;
+        ballY += balldirectionY  * 0.3;
+    }
+    else if (hitX) {
+        balldirectionX = -balldirectionX;
+        ballX += balldirectionX * 0.3;
+    }
+    else if (hitY) {
+        balldirectionY = -balldirectionY;
+        ballY += balldirectionY * 0.3;
+    }
+}
+}
+function lvl2drawpower(){
+    if(!lvl2power)ctx.drawImage(tazzaCalda,lvl2powerx,lvl2powery,60,50);
+    if(ballX + radius > lvl2powerx && ballX - radius < lvl2powerx + 60
+       && ballY - radius < lvl2powery + 60 && ballY + radius > lvl2powery)
+       {
+        powerPresoCL = true;
+        powerPreso = true;
+        lvl2power = true;
+        balldirectionX *= 2;
+        balldirectionY *= 2;
+
+       }
+
+}
+function lvl2drawBomb(){
+    if(!lvl2bomb)ctx.drawImage(Bomb,lvl2bombx,lvl2bomby,60,50);
+    if(ballX + radius > lvl2bombx && ballX - radius < lvl2bombx + 60
+       && ballY - radius < lvl2bomby + 60 && ballY + radius > lvl2bomby)
+       {
+        bombPreso = true;
+        lvl2bomb = true;
+        lifes -= 1
+       }
+
+}
+function esplosioneBomb(){
+   if(bombPreso){
+    if(esplosioneTime < 500){
+    if(lifes == 0){
+            ctx.drawImage(esplosione,15,10,40,40);
+    }
+    if(lifes == 1){
+            ctx.drawImage(esplosione,50,10,40,40);
+    }
+    if(lifes == 2){
+            ctx.drawImage(esplosione,85,10,40,40);
+    }
+    esplosioneTime ++;
+    }}
 }
 
 
