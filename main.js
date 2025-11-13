@@ -108,6 +108,7 @@ Promise.all([
     ctxLeft.fillText("test", 0, 0);
     Home();
     
+    
    
 })
 //...........................................................................................
@@ -119,13 +120,38 @@ let Lvl1 = false;
 let lvl1finito = false;
 let lvl2 = false;
 
+// sound
+let dialoghi = new Audio("./Click-button.wav");
+let SkipDialoghi = new Audio("./SkipDialoghi.wav");
+let Homesfx = new Audio("./musicaHome.mp3");
+Homesfx.volume = 0.2;
+let sfxlvl1 = new Audio("./sfxlvl1.mp3");
+sfxlvl1.volume = 0.1;
+let Gameover = new Audio("./gameover.wav");
+Gameover.volume = 0.2;
+let vittoria = new Audio("./vittoria.wav")
+vittoria.volume = 0.4;
+let Brick1 = new Audio("./ballBrickDestroyed.wav")
+Brick1.volume = 0.1;
+let Brick2 = new Audio("./ballBrickDestroyed2.wav")
+Brick1.volume = 0.2;
+
+
+
 // listener space bar per movimento dialoghi
 window.addEventListener("keyup", (e)=>{
-    if(e.code === 'Space')StatoDellaHome ++;
+    if(e.code === 'Space'){
+        StatoDellaHome ++;
+        dialoghi.play();
+        Homesfx.play();
+    }
+
 })
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'Enter'){
         Lvl1 = true;
+        SkipDialoghi.play();
+        
     }})
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'KeyR')
@@ -295,7 +321,7 @@ function Home(){
         ctx.fillStyle = "white";
         ctx.font = " 40px 'Jersey 10'";
         ctx.fillText("questa e' la tua arma, la BARRA,",canvas.width/2-180,canvas.height/2 - 280);
-        ctx.fillText("muovila con i tasti 'a' e 'w'.",canvas.width/2-180,canvas.height/2 -240);
+        ctx.fillText("muovila con i tasti 'a' e 'd'.",canvas.width/2-180,canvas.height/2 -240);
         ctx.fillText("Se la colpisci in mezzo la palla andra'",canvas.width/2-180,canvas.height/2 -200);
         ctx.fillText("su dritta, se colpita ai lati",canvas.width/2-180,canvas.height/2 - 160);
         ctx.fillText("rimbalzera' a seconda di quanto",canvas.width/2-180,canvas.height/2-120);
@@ -414,6 +440,8 @@ let GameOver = false;
 
 // loop per far partire il primo livello
 function Livello1(){
+    Homesfx.pause();
+    sfxlvl1.play();
     window.addEventListener("keyup", (e)=>{
     if(e.code === 'Space') lvl1ready = true;
     })
@@ -422,6 +450,9 @@ function Livello1(){
     canvas.style.border = "3px solid #87A330";
     canvas.style.boxShadow = "0px 0px 60px #87A330";
     if(GameOver){
+        Gameover.play();
+        sfxlvl1.pause();
+        sfxlvl1.currentTime = 0
         CreazioneLvl1 = false;
         ctx.strokeStyle = 'black';
         ctx.shadowColor = "black";
@@ -448,7 +479,10 @@ function Livello1(){
     }
     //vittoria();
     if(rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 && rettangoli3.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0){
+        vittoria.play();
         ctx.save();
+        sfxlvl1.pause();
+        sfxlvl1.currentTime = 0
         ctx.strokeStyle = '#87A330';
         ctx.shadowColor = "#87A330";
         ctx.lineWidth = "3"
@@ -591,17 +625,19 @@ function disegnarect(){
     
 
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -642,17 +678,19 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -693,17 +731,19 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -744,17 +784,19 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -794,17 +836,19 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
         hitX = true;rettangoli[i].vita -= 1;
     }
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }}
@@ -853,17 +897,19 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
     
 
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -ball2directionX;
         ball2directionY = -ball2directionY;
         pallax += ball2directionX * 0.3;
         pallay += ball2directionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         ball2directionX = -ball2directionX;
         pallax += ball2directionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }
@@ -904,17 +950,19 @@ for(let i = rettangoli3.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -ball2directionX;
         ball2directionY = -ball2directionY;
         pallax += ball2directionX * 0.3;
         pallay += ball2directionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         ball2directionX = -ball2directionX;
         pallax += ball2directionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }
@@ -955,17 +1003,19 @@ for(let i = rettangoli3emezzo.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -ball2directionX;
         ball2directionY = -ball2directionY;
         pallax += ball2directionX * 0.3;
         pallay += ball2directionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         ball2directionX = -ball2directionX;
         pallax += ball2directionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }
@@ -1007,17 +1057,19 @@ for(let i = rettangoli2.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -ball2directionX;
         ball2directionY = -ball2directionY;
         pallax += ball2directionX * 0.3;
         pallay += ball2directionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         ball2directionX = -ball2directionX;
         pallax += ball2directionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }
@@ -1057,17 +1109,19 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
         hitX = true;rettangoli[i].vita -= 1;
     }
     if (hitX && hitY) {
-  
+        Brick1.play();
         ball2directionX = -ball2directionX;
         ball2directionY = -ball2directionY;
         pallax += ball2directionX * 0.3;
         pallay += ball2directionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         ball2directionX = -ball2directionX;
         pallax += ball2directionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         ball2directionY = -ball2directionY;
         pallay += ball2directionY * 0.3;
     }}}
@@ -1283,9 +1337,17 @@ lvl2crearerectrow1emezzo();
 lvl2crearerectrow();
 
 function livello2(){
+    Homesfx.pause();
+    Gameover.pause();
+    vittoria.pause();
+    sfxlvl1.play();
+    Gameover.currentTime = 0
+    vittoria.currentTime = 0
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
     if(lifes == 0){
+        sfxlvl1.pause();
+        Gameover.play()
         ctx.fillStyle = "#243010";
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010";
@@ -1320,6 +1382,8 @@ function livello2(){
         return;
     }
     if(lvl2rettangoli4.length === 0 &&  lvl2rettangoli3emezzo.length === 0 && lvl2rettangoli3.length === 0 && lvl2rettangoli2.length === 0 && lvl2rettangoli2emezzo.length === 0 && lvl2rettangoli1.length === 0 && lvl2rettangoli1emezzo.length === 0 && lvl2rettangoli.length === 0){
+        sfxlvl1.pause();
+        vittoria.play();
         ctx.fillStyle = "#243010";
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctxLeft.fillStyle = "#243010";
@@ -1537,15 +1601,17 @@ function lvl2disegnaRect(){
     }
 
     if (hitX && hitY) {
-
+        Brick1.play();
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1585,17 +1651,19 @@ for(let i = lvl2rettangoli3.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1635,17 +1703,19 @@ for(let i = lvl2rettangoli3emezzo.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1688,17 +1758,19 @@ for(let i = lvl2rettangoli2.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1741,17 +1813,19 @@ for(let i = lvl2rettangoli2emezzo.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1794,17 +1868,19 @@ for(let i = lvl2rettangoli1.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1847,17 +1923,19 @@ for(let i = lvl2rettangoli1emezzo.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1903,17 +1981,19 @@ for(let i = lvl2rettangoli.length - 1; i >= 0; i--){
     }
     
     if (hitX && hitY) {
-  
+        Brick1.play();
         balldirectionX = -balldirectionX;
         balldirectionY = -balldirectionY;
         ballX += balldirectionX * 0.3;
         ballY += balldirectionY  * 0.3;
     }
     else if (hitX) {
+        Brick1.play();
         balldirectionX = -balldirectionX;
         ballX += balldirectionX * 0.3;
     }
     else if (hitY) {
+        Brick1.play();
         balldirectionY = -balldirectionY;
         ballY += balldirectionY * 0.3;
     }
@@ -1966,6 +2046,7 @@ function esplosioneBomb(){
 //                               FUNZIONI LVL3
 
 function livello3(){
+        Homesfx.play();
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
         canvas.style.border = "none";
