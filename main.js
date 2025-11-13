@@ -41,6 +41,14 @@ const esplosione = new Image();
 esplosione.src = "esplosione.png";
 const FrankGover = new Image();
 FrankGover.src = "frankGover.png";
+const FrankT = new Image();
+FrankT.src = "TazzaFrank.png";
+const FrankV = new Image();
+FrankV.src = "FrankVittoria.png";
+
+// immagini livello 3
+const RickyWIP = new Image();
+RickyWIP.src = "RickyWIP.png";
 
 // immagini robot e animazioni
 const RobotImg = new Image();
@@ -75,6 +83,10 @@ Promise.all([
     new Promise(resolve => Bomb.onload = resolve),
     new Promise(resolve => esplosione.onload = resolve),
     new Promise(resolve => FrankGover.onload = resolve),
+    new Promise(resolve => FrankT.onload = resolve),
+    new Promise(resolve => FrankV.onload = resolve),
+    // terzo livello
+    new Promise(resolve => RickyWIP.onload = resolve),
 
     // caricamento robot animazioni 
     new Promise(resolve => RobotImg.onload = resolve),
@@ -94,8 +106,7 @@ Promise.all([
     // font robot 
     ctxLeft.font = " 28px 'Jersey 10'";
     ctxLeft.fillText("test", 0, 0);
-    //Home();
-    livello2()
+    Home();
     
    
 })
@@ -105,22 +116,16 @@ Promise.all([
 // variabile per devinire lo stato del gioco home..lvl1..lvl2..lvl3
 let StatoDellaHome = 0 // 0 titolo; 1 spiegazione; ecc..
 let Lvl1 = false;
-let lvl1finito = true
+let lvl1finito = false;
 let lvl2 = false;
 
 // listener space bar per movimento dialoghi
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'Space')StatoDellaHome ++;
-    if(lvl1finito && e.code === 'Space'){
-        inizioLvl2 = true;
-        stageGame2 = 1
-    }
-
 })
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'Enter'){
         Lvl1 = true;
-
     }})
 window.addEventListener("keyup", (e)=>{
     if(e.code === 'KeyR')
@@ -354,6 +359,7 @@ function Home(){
 // variabile stage gioco
 let stageGame1 = 0;
 let CreazioneLvl1 = true;
+let lvl1ready = false;
 
 // variabile power
 let powerx = 380;
@@ -368,7 +374,7 @@ let vivaBall2 = true;
 
 // variabili pallina
 let ballX =canvas.width/2;
-let ballY =canvas.height/2
+let ballY =canvas.height/2-50
 let radius = 10;
 let balldirectionX = (Math.round(Math.random())* 2 - 1)*8;
 let balldirectionY = 8;
@@ -397,6 +403,8 @@ crearerectrow3emezzo();
 crearerectrow4();
 }
 
+
+
 // variabile lifes e gameover o victory
 let victory = false;
 let GameOver = false;
@@ -406,6 +414,9 @@ let GameOver = false;
 
 // loop per far partire il primo livello
 function Livello1(){
+    window.addEventListener("keyup", (e)=>{
+    if(e.code === 'Space') lvl1ready = true;
+    })
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
     canvas.style.border = "3px solid #87A330";
@@ -435,7 +446,8 @@ function Livello1(){
         ctx.fillText("Premi 'r' per riprovare...",220,700);
         return;
     }
-    if(victory){
+    //vittoria();
+    if(rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 && rettangoli3.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0){
         ctx.save();
         ctx.strokeStyle = '#87A330';
         ctx.shadowColor = "#87A330";
@@ -454,17 +466,18 @@ function Livello1(){
         canvas.style.border = "none";
         canvas.style.boxShadow = "none";
         ctx.restore();
+        ballX =canvas.width/2;
+        ballY =canvas.height/2
         return lvl1finito = true;
     }
     
     Go();
     stageG1();
-    vittoria();
     controlloLose();
     hearts();
     movement();
     bordiBar();
-    Ballmovement();
+    if(lvl1ready)Ballmovement();
     drawBall();
     collisioneBar();
     collsionwall();
@@ -1059,13 +1072,6 @@ for(let i = rettangoli.length - 1; i >= 0; i--){
         pallay += ball2directionY * 0.3;
     }}}
 }
-
-// vittori
-function vittoria(){
-    if( rettangoli4.length === 0 &&  rettangoli3emezzo.length === 0 &&  rettangoli2.length === 0 &&  rettangoli.length === 0) 
-        victory = true;
-}
-
 // stage primo livello
 function stageG1(){
     
@@ -1082,6 +1088,7 @@ function stageG1(){
         ctxLeft.fillText("Lono e' furioso,",170,200);
         ctxLeft.fillText("una sua compagna",170,225);
         ctxLeft.fillText("l'ha SNITCHATO...",170,250);
+        ctxLeft.fillText("Premi 'Space' per iniziare...",50,50);
     }
     if(stageGame1 >= 4 && stageGame1 < 6){
         ctxLeft.fillStyle = "#243010";
@@ -1168,10 +1175,10 @@ function controlloLose(){
     if(ballY + radius > canvas.height){
         lifes -= 1;
         ballX =canvas.width/2;
-        ballY =canvas.height/2;
+        ballY =canvas.height/2 - 50;
         if(powerPresoCL){
-        balldirectionX /= 2;
-        balldirectionY /= 2;
+        balldirectionX /= 1.5;
+        balldirectionY /= 1.5;
         powerPresoCL = false
     }
     }
@@ -1184,7 +1191,7 @@ function controlloLose(){
 
 // collisione con barra pallaina primo lvl
 function collisioneBar(){
-    if(ballY + radius >= barY && ballX + radius > barX && barX + barSize > ballX + radius){
+    if(ballY + radius >= barY && ballX + radius > barX && barX + barSize > ballX ){
        
         let centerdistance = ballX - (barX + barSize/2);
         let normalized = centerdistance/(barSize/2);
@@ -1239,8 +1246,21 @@ let bombPreso = false;
 let lvl2bombx = 275;
 let lvl2bomby = 195;
 let esplosioneTime = 0;
+let lvl2finito = false;
 
+// salto per iniziare il lvl2
+window.addEventListener("keyup", (e)=>{    
+if( lvl1finito && e.code === 'Space'){
+        inizioLvl2 = true;
+        stageGame2 = 1;
+    }
+});
 
+// per iniziare lvl3
+window.addEventListener("keyup", (e)=>{
+    if((e.code === 'Digit3' || e.code === 'Numpad3') && lvl2finito)
+    livello3();
+})
 
 // rettangoli lvl2
 let lvl2rettangoli = [{x:50,y:150,Rsize:Rsize,Rheight:Rheight, vita:4,color:'white'}];
@@ -1298,6 +1318,32 @@ function livello2(){
         ctxLeft.fillText("idiota!",220,90);
 
         return;
+    }
+    if(lvl2rettangoli4.length === 0 &&  lvl2rettangoli3emezzo.length === 0 && lvl2rettangoli3.length === 0 && lvl2rettangoli2.length === 0 && lvl2rettangoli2emezzo.length === 0 && lvl2rettangoli1.length === 0 && lvl2rettangoli1emezzo.length === 0 && lvl2rettangoli.length === 0){
+        ctx.fillStyle = "#243010";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        canvas.style.border = "none";
+        canvas.style.boxShadow = "none";
+        ctx.strokeStyle = 'rgb(0, 179, 255)';
+        ctx.shadowColor = "rgb(0, 179, 255)";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
+        ctx.drawImage(FrankV,0,canvas.height-700,550,650);
+        ctx.strokeStyle = '#87A330';
+        ctx.shadowColor = "#87A330";
+        ctx.lineWidth = "3"
+        ctx.shadowBlur = 12
+        ctx.drawImage(Robotframe4,30,50,150,250);
+        ctx.fillStyle = "white";
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Bravissimo hai sconfitto Frank",230,50);
+        ctx.fillText("Vabbe era facile lui!",230,100);
+        ctx.fillText("Premi '3' per andare al prossimo livello!",230,150);
+
+
+        return lvl2finito = true;
     }
     if(inizioLvl2)Ballmovement();
     stageG2();
@@ -1360,6 +1406,23 @@ function stageG2(){
     ctxLeft.fillText("toccando la tazza Frank",220,50);
     ctxLeft.fillText("si scotterà, potresti",220,70);
     ctxLeft.fillText("usarlo a tuo vantaggio!",220,90);
+}
+    if(stageGame2 == 2){
+    ctx.fillStyle= "#243010"
+    ctxLeft.fillStyle= "#243010"
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+    ctxLeft.drawImage(Robotframe3,15,canvasLeft.height -100,150,100);
+    ctxLeft.fillStyle = "white";
+    ctxLeft.font = " 35px 'Jersey 10'";
+    ctxLeft.fillText("Si è scottato con il",180,200);
+    ctxLeft.fillText("suo cappucciono...",180,230);
+    ctx.drawImage(FrankT,0,-40,canvas.width,canvas.height + 200);
+    ctxLeft.drawImage(Robot2Braccio,-80,-10,300,150);
+    ctxLeft.font = " 25px 'Jersey 10'";
+    ctxLeft.fillStyle = "rgb(128, 253, 255)"
+    ctxLeft.fillText("Che idiota",220,50);
+
 }
 }
 function lvl2drawBall(){
@@ -1864,8 +1927,9 @@ function lvl2drawpower(){
         powerPresoCL = true;
         powerPreso = true;
         lvl2power = true;
-        balldirectionX *= 2;
-        balldirectionY *= 2;
+        balldirectionX *= 1.5;
+        balldirectionY *= 1.5;
+        stageGame2 = 2;
 
        }
 
@@ -1897,6 +1961,31 @@ function esplosioneBomb(){
     }}
 }
 
+//...........................................................................................
+// variabili livello 3
+//                               FUNZIONI LVL3
 
-
-
+function livello3(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctxLeft.clearRect(0,0,canvasLeft.width,canvasLeft.height);
+        canvas.style.border = "none";
+        canvas.style.boxShadow = "none";
+        ctx.fillStyle = "#243010";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctxLeft.fillStyle = "#243010";
+        ctxLeft.fillRect(0,0,canvasLeft.width,canvasLeft.height);
+        ctx.fillStyle = "white"
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("Livello 3 in sviluppo....",20,100);
+        ctx.fillText("Si puo' dire che hai battutto il gioco!",20,150);
+        ctx.fillText("per ora......Ma attento!",20,200);
+        ctx.fillText("il boss finale",20,260);
+        ctx.font = " 60px 'Jersey 10'";
+        ctx.fillStyle = "red"
+        ctx.fillText("Rickyciutausan",250,260);
+        ctx.fillStyle = "white"
+        ctx.font = " 40px 'Jersey 10'";
+        ctx.fillText("è quasi pronto all'azione",20,310);
+        ctx.drawImage(RickyWIP,-1250,-120,3000,1500)
+    requestAnimationFrame(livello3);
+}
