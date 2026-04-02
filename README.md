@@ -1,1 +1,1 @@
-if you want to try it : pong-hazel.vercel.app
+if you want to try it : https://pong-hazel.vercel.app
